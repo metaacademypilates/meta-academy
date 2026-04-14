@@ -2377,23 +2377,16 @@ function saveOrder(){
   const st=document.getElementById('orderStatus');
   st.textContent='Kaydediliyor...';st.style.color='var(--muted)';
   const order=getCurrentOrder();
-  fetch('https://tffotrxrulotvoboeewv.supabase.co/rest/v1/site_config?key=eq.section_order',{
-    method:'PATCH',
-    headers:{'Content-Type':'application/json','apikey':SVC_KEY,'Authorization':'Bearer '+SVC_KEY,'Prefer':'return=minimal'},
-    body:JSON.stringify({value:order})
+  // Upsert via POST with merge-duplicates
+  fetch('https://tffotrxrulotvoboeewv.supabase.co/rest/v1/site_config?on_conflict=key',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':SVC_KEY,'Authorization':'Bearer '+SVC_KEY,'Prefer':'resolution=merge-duplicates,return=minimal'},
+    body:JSON.stringify({key:'section_order',value:order,updated_at:new Date().toISOString()})
   }).then(r=>{
-    if(r.ok){st.textContent='✓ Kaydedildi';st.style.color='#4ade80';}
+    if(r.ok){st.textContent='✓ Kaydedildi — siteyi yenileyerek görebilirsin';st.style.color='#4ade80';}
     else{return r.text().then(t=>{throw new Error(t);});}
   }).catch(err=>{
-    // Row doesn't exist → insert
-    fetch('https://tffotrxrulotvoboeewv.supabase.co/rest/v1/site_config',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','apikey':SVC_KEY,'Authorization':'Bearer '+SVC_KEY,'Prefer':'return=minimal'},
-      body:JSON.stringify({key:'section_order',value:order})
-    }).then(r2=>{
-      if(r2.ok){st.textContent='✓ Kaydedildi';st.style.color='#4ade80';}
-      else{st.textContent='Hata: tabloyu oluşturun';st.style.color='#f87171';}
-    }).catch(()=>{st.textContent='Hata';st.style.color='#f87171';});
+    st.textContent='Hata: '+(err.message||'bilinmiyor');st.style.color='#f87171';
   });
 }
 function loadOrder(){
