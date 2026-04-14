@@ -72,7 +72,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--green);b
 .nav-d a::after{content:'';position:absolute;bottom:0;left:1rem;right:1rem;height:2px;border-radius:999px;background:var(--cream);transform:scaleX(0);transition:transform .25s}
 .nav-d a:hover{color:white}.nav-d a:hover::after{transform:scaleX(1)}
 .dropdown{position:relative;z-index:9999}
-.drop-menu{position:absolute;top:calc(100% + .5rem);left:0;transform:none;background:var(--card);border:1px solid var(--border);border-radius:.75rem;box-shadow:var(--shadow-lg);padding:.65rem;min-width:200px;opacity:0;visibility:hidden;transition:opacity .2s,transform .2s;z-index:9999;pointer-events:none}ransition:all .25s;z-index:200;pointer-events:none}
+.drop-menu{position:absolute;top:calc(100% + .5rem);left:0;transform:none;background:var(--card);border:1px solid var(--border);border-radius:.75rem;box-shadow:var(--shadow-lg);padding:.65rem;min-width:200px;opacity:0;visibility:hidden;transition:opacity .2s,transform .2s;z-index:9999;pointer-events:none}.dropdown:hover .drop-menu,.dropdown:focus-within .drop-menu{opacity:1;visibility:visible;pointer-events:auto}
 .dropdown:hover .drop-menu{opacity:1;visibility:visible;pointer-events:auto;transform:none}
 .drop-menu-lbl{font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:.25rem .75rem;margin-bottom:.25rem}
 .drop-menu a{display:block;padding:.5rem .75rem;border-radius:.6rem;font-size:.88rem;font-weight:500;color:var(--text);transition:background .15s,color .15s}
