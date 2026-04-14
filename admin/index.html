@@ -1029,7 +1029,7 @@ function updateApptBadge(n){
   var token=sessionStorage.getItem('ma_token');
   if(!token)return;
   fetch('https://tffotrxrulotvoboeewv.supabase.co/rest/v1/appointments?status=eq.bekliyor&select=id',{
-    headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k','Authorization':'Bearer '+token,'Accept':'application/json'}
+    headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k','Accept':'application/json'}
   }).then(function(r){return r.json();}).then(function(d){badge.textContent=(Array.isArray(d)?d.length:0)||'';}).catch(function(){});
 }
 
@@ -1557,7 +1557,7 @@ function renderAppt(){
   var url='https://tffotrxrulotvoboeewv.supabase.co/rest/v1/appointments?order=created_at.desc&limit=100';
   if(apptFilter!=='all')url+='&status=eq.'+apptFilter;
   fetch(url,{
-    headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k','Authorization':'Bearer '+token,'Accept':'application/json'}
+    headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k','Accept':'application/json'}
   })
   .then(function(r){return r.json();})
   .then(function(all){
@@ -1626,7 +1626,7 @@ function updateApptStatus(id,status){
   var token=sessionStorage.getItem('ma_token');
   fetch('https://tffotrxrulotvoboeewv.supabase.co/rest/v1/appointments?id=eq.'+id,{
     method:'PATCH',
-    headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k','Authorization':'Bearer '+token,'Prefer':'return=minimal'},
+    headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k','Prefer':'return=minimal'},
     body:JSON.stringify({status:status,updated_at:new Date().toISOString()})
   })
   .then(function(r){if(r.ok)toast('Durum güncellendi ✓');else toast('Hata','e');})
@@ -1638,7 +1638,7 @@ function deleteAppt(id){
   var token=sessionStorage.getItem('ma_token');
   fetch('https://tffotrxrulotvoboeewv.supabase.co/rest/v1/appointments?id=eq.'+id,{
     method:'DELETE',
-    headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k','Authorization':'Bearer '+token}
+    headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k'}
   })
   .then(function(r){if(r.ok){toast('Silindi ✓');renderAppt();}else toast('Hata','e');})
   .catch(function(){toast('Bağlantı hatası','e');});
