@@ -2299,56 +2299,16 @@ function init(){ensureDefaultData();loadSt();loadHero();loadHeroCanvas();renderS
 document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
 
 
-// ── AUTH OVERRIDES ──
-function doAuth(){
-  const em=document.getElementById('em').value.trim();
-  const pw=document.getElementById('pw').value;
-  const err=document.getElementById('authErr');
-  if(!em||!pw){err.classList.add('show');err.textContent='E-posta ve şifre girin.';return;}
-  if(pw.length<6){err.classList.add('show');err.textContent='Şifre en az 6 karakter olmalı.';return;}
-  err.classList.remove('show');
-  sessionStorage.setItem('ma_auth','1');
-  sessionStorage.setItem('ma_email',em);
-  document.getElementById('loginPage').style.display='none';
-  document.getElementById('adminPage').classList.add('active');
-  document.getElementById('userEm').textContent=em;
-  // Update avatar initial
-  const av=document.querySelector('.sidebar-user-av');
-  if(av) av.textContent=(em[0]||'A').toUpperCase();
-  const name=document.querySelector('.sidebar-user-name');
-  if(name) name.textContent=currentRole==='admin'?'Yönetici':'Eğitmen';
-  updateApptBadge();
-  init();
-}
-function doLogout(){
-  sessionStorage.removeItem('ma_auth');sessionStorage.removeItem('ma_email');
-  location.reload();
-}
-function showForgot(){
-  const em=document.getElementById('em').value.trim();
-  if(!em){document.getElementById('authErr').classList.add('show');document.getElementById('authErr').textContent='E-posta girin.';return;}
-  document.getElementById('sentEm').textContent=em;
-  document.getElementById('loginFormArea').style.display='none';
-  document.getElementById('resetSent').style.display='block';
-}
-function showLogin(){
-  document.getElementById('loginFormArea').style.display='block';
-  document.getElementById('resetSent').style.display='none';
-}
+// ── AUTH: real Supabase auth only (overrides removed) ──
+// Registration via the panel is disabled — new admins must be created in Supabase dashboard.
 function toggleMode(){
-  const btn=document.getElementById('modeBtn');
-  const title=document.getElementById('loginTitle');
-  const sub=document.getElementById('loginSub');
-  const mainBtn=document.getElementById('mainBtn');
-  if(mainBtn.textContent==='Giriş Yap'){
-    mainBtn.textContent='Kayıt Ol';title.textContent='Hesap Oluştur';sub.textContent='Yeni hesap oluşturun';btn.textContent='Zaten hesabım var';
-  } else {
-    mainBtn.textContent='Giriş Yap';title.textContent=(currentRole==='admin'?'Yönetici':'Eğitmen')+' Girişi';sub.textContent='Meta Academy admin paneline giriş yapın';btn.textContent='Hesap oluştur';
-  }
+  document.getElementById('authErr').classList.remove('show');
+  document.getElementById('authErr').classList.add('show');
+  document.getElementById('authErr').textContent='Yeni kayıt kapalı. Yetkili kullanıcı ekleme için yöneticinize başvurun.';
 }
 
-// Check auth on load
-if(sessionStorage.getItem('ma_auth')){
+// Check auth on load — require a real Supabase access_token, not just the flag
+if(sessionStorage.getItem('ma_auth')&&sessionStorage.getItem('ma_token')){
   document.getElementById('loginPage').style.display='none';
   document.getElementById('adminPage').classList.add('active');
   const em=sessionStorage.getItem('ma_email')||'';
