@@ -406,6 +406,10 @@ img{max-width:100%;display:block}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.32C1.6 2.18 2.43 1.03 3.51 1H6.5a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.09a16 16 0 0 0 6 6l.76-.76a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           İletişim & Harita
         </button>
+        <button class="nav-item" onclick="sw('order',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          Sayfa Sıralama
+        </button>
         <button class="nav-item" onclick="sw('style',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M5.34 18.66l-1.41 1.41M22 12h-2M4 12H2M19.07 19.07l-1.41-1.41M5.34 5.34L3.93 3.93M12 22v-2M12 4V2"/></svg>
           Stil & Tasarım
@@ -892,6 +896,15 @@ img{max-width:100%;display:block}
     </div>
 
     <!-- ── STİL ── -->
+    <div class="panel" id="p-order">
+      <div class="card">
+        <div class="sec-title">🔀 Bölüm Sıralaması</div>
+        <p style="color:var(--muted);font-size:.85rem;margin-bottom:1rem">Web sitesindeki bölümleri sürükleyip bırakarak sıralayın. Değişiklikler anında siteye yansır.</p>
+        <ul id="orderList" style="list-style:none;padding:0;margin:0 0 1rem 0"></ul>
+        <button class="btn btn-primary" onclick="saveOrder()">💾 Sıralamayı Kaydet</button>
+        <span id="orderStatus" style="margin-left:1rem;font-size:.85rem;color:var(--muted)"></span>
+      </div>
+    </div>
     <div class="panel" id="p-style">
       <div class="sy">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
@@ -983,6 +996,7 @@ const PAGE_HEADERS = {
   rev:  {title:'Yorumlar', sub:'Müşteri yorumlarını yönetin'},
   gal:  {title:'Galeri', sub:'Görsel galerisini düzenleyin'},
   con:  {title:'İletişim & Harita', sub:'İletişim bilgileri ve harita ayarları'},
+  order:{title:'Sayfa Sıralaması', sub:'Bölümleri sürükleyerek sıralayın'},
   style:{title:'Stil & Tasarım', sub:'Site renklerini ve fontları özelleştirin'},
   preview:{title:'Site Önizleme', sub:'Değişiklikleri canlı görün'},
 };
@@ -2321,6 +2335,80 @@ if(sessionStorage.getItem('ma_auth')&&sessionStorage.getItem('ma_token')){
   setTimeout(startMiniCanvas, 500);
 }
 document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
+
+// ── SECTION ORDER (drag-drop) ──
+const SVC_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k';
+const SECTION_DEF=[
+  {id:'services',label:'Hizmetler'},
+  {id:'gallery',label:'Galeri'},
+  {id:'how-it-works',label:'Nasıl Çalışıyoruz'},
+  {id:'reviews',label:'Yorumlar'}
+];
+function renderOrder(ord){
+  const ul=document.getElementById('orderList');if(!ul)return;
+  const byId={};SECTION_DEF.forEach(s=>byId[s.id]=s);
+  const final=[];ord.forEach(id=>{if(byId[id]){final.push(byId[id]);delete byId[id];}});
+  Object.keys(byId).forEach(id=>final.push(byId[id]));
+  ul.innerHTML='';
+  final.forEach(s=>{
+    const li=document.createElement('li');
+    li.draggable=true;li.dataset.id=s.id;
+    li.style.cssText='padding:.85rem 1rem;margin:.4rem 0;background:var(--card);border:1.5px solid var(--border);border-radius:.6rem;cursor:grab;display:flex;align-items:center;gap:.7rem;font-weight:600;user-select:none';
+    li.innerHTML='<span style="color:var(--muted);font-size:1.1rem">⋮⋮</span><span>'+s.label+'</span>';
+    li.ondragstart=e=>{li.style.opacity='.4';e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',s.id);};
+    li.ondragend=()=>{li.style.opacity='1';};
+    li.ondragover=e=>{e.preventDefault();e.dataTransfer.dropEffect='move';};
+    li.ondrop=e=>{
+      e.preventDefault();const src=e.dataTransfer.getData('text/plain');
+      if(src===s.id)return;
+      const srcEl=ul.querySelector('[data-id="'+src+'"]');
+      if(!srcEl)return;
+      const rect=li.getBoundingClientRect();
+      const before=e.clientY<rect.top+rect.height/2;
+      ul.insertBefore(srcEl,before?li:li.nextSibling);
+    };
+    ul.appendChild(li);
+  });
+}
+function getCurrentOrder(){
+  return Array.from(document.querySelectorAll('#orderList li')).map(l=>l.dataset.id);
+}
+function saveOrder(){
+  const st=document.getElementById('orderStatus');
+  st.textContent='Kaydediliyor...';st.style.color='var(--muted)';
+  const order=getCurrentOrder();
+  fetch('https://tffotrxrulotvoboeewv.supabase.co/rest/v1/site_config?key=eq.section_order',{
+    method:'PATCH',
+    headers:{'Content-Type':'application/json','apikey':SVC_KEY,'Authorization':'Bearer '+SVC_KEY,'Prefer':'return=minimal'},
+    body:JSON.stringify({value:order})
+  }).then(r=>{
+    if(r.ok){st.textContent='✓ Kaydedildi';st.style.color='#4ade80';}
+    else{return r.text().then(t=>{throw new Error(t);});}
+  }).catch(err=>{
+    // Row doesn't exist → insert
+    fetch('https://tffotrxrulotvoboeewv.supabase.co/rest/v1/site_config',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SVC_KEY,'Authorization':'Bearer '+SVC_KEY,'Prefer':'return=minimal'},
+      body:JSON.stringify({key:'section_order',value:order})
+    }).then(r2=>{
+      if(r2.ok){st.textContent='✓ Kaydedildi';st.style.color='#4ade80';}
+      else{st.textContent='Hata: tabloyu oluşturun';st.style.color='#f87171';}
+    }).catch(()=>{st.textContent='Hata';st.style.color='#f87171';});
+  });
+}
+function loadOrder(){
+  fetch('https://tffotrxrulotvoboeewv.supabase.co/rest/v1/site_config?key=eq.section_order&select=value',{
+    headers:{'apikey':SVC_KEY,'Authorization':'Bearer '+SVC_KEY}
+  }).then(r=>r.json()).then(rows=>{
+    const ord=(Array.isArray(rows)&&rows[0]&&Array.isArray(rows[0].value))?rows[0].value:SECTION_DEF.map(s=>s.id);
+    renderOrder(ord);
+  }).catch(()=>renderOrder(SECTION_DEF.map(s=>s.id)));
+}
+// Load order when panel opened
+(function(){
+  const orig=window.sw;
+  window.sw=function(name,btn){orig(name,btn);if(name==='order')loadOrder();};
+})();
 </script>
 </body>
 </html>
