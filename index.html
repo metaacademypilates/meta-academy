@@ -749,27 +749,27 @@ function renderContact(){
   const mapCt=document.getElementById('mapCt');
   if(mapCt && isOn(sts,'maps_url')){
     mapCt.style.display='';
-    // OpenStreetMap — 5x3 tile grid, harita tam görünür
-    var lat=40.9640568,lng=29.0955825;
+    // OpenStreetMap — pin daima konum merkezinde
+    // Plus Code X37W+J6 Kadıköy → 40.9640625, 29.0955625
+    var lat=40.9640625,lng=29.0955625;
     var zoom=16;
     var n=Math.pow(2,zoom);
     var tx=Math.floor((lng+180)/360*n);
     var ty=Math.floor((1-Math.log(Math.tan(lat*Math.PI/180)+1/Math.cos(lat*Math.PI/180))/Math.PI)/2*n);
-    // Pixel offset: konum tile içinde tam ortada değil, hesapla
     var fracX=(lng+180)/360*n-tx;
     var sinLat=Math.sin(lat*Math.PI/180);
     var fracY=(1-Math.log((1+sinLat)/(1-sinLat))/(4*Math.PI))*n-ty;
     var offX=Math.round(fracX*256);
     var offY=Math.round(fracY*256);
-    // 5 sütun x 3 satır tile → 1280x768 piksel harita, merkezde konumuz
+    // Her tile'ın konumu: container merkezine göre relatif. Pin (50%,50%) ile çakışır.
     var cols=[-2,-1,0,1,2], rows=[-1,0,1];
     var tilesHtml='';
     rows.forEach(function(dy){
       cols.forEach(function(dx){
-        var px=(dx+2)*256-(offX-128);
-        var py=(dy+1)*256-(offY-128);
+        var px=dx*256-offX;
+        var py=dy*256-offY;
         tilesHtml+='<img src="https://tile.openstreetmap.org/'+zoom+'/'+(tx+dx)+'/'+(ty+dy)+'.png"'+
-          ' style="position:absolute;left:'+px+'px;top:'+py+'px;width:256px;height:256px;image-rendering:crisp-edges"'+
+          ' style="position:absolute;left:calc(50% + '+px+'px);top:calc(50% + '+py+'px);width:256px;height:256px;image-rendering:crisp-edges"'+
           ' crossorigin="anonymous"/>';
       });
     });
