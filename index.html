@@ -749,47 +749,20 @@ function renderContact(){
   const mapCt=document.getElementById('mapCt');
   if(mapCt && isOn(sts,'maps_url')){
     mapCt.style.display='';
-    // OpenStreetMap — pin daima konum merkezinde
-    // Plus Code X37W+J6 Kadıköy → 40.9640625, 29.0955625
+    // OpenStreetMap iframe — Plus Code X37W+J6 Kadıköy
     var lat=40.9640625,lng=29.0955625;
-    var zoom=16;
-    var n=Math.pow(2,zoom);
-    var tx=Math.floor((lng+180)/360*n);
-    var ty=Math.floor((1-Math.log(Math.tan(lat*Math.PI/180)+1/Math.cos(lat*Math.PI/180))/Math.PI)/2*n);
-    var fracX=(lng+180)/360*n-tx;
-    var sinLat=Math.sin(lat*Math.PI/180);
-    var fracY=(1-Math.log((1+sinLat)/(1-sinLat))/(4*Math.PI))*n-ty;
-    var offX=Math.round(fracX*256);
-    var offY=Math.round(fracY*256);
-    // Her tile'ın konumu: container merkezine göre relatif. Pin (50%,50%) ile çakışır.
-    var cols=[-2,-1,0,1,2], rows=[-1,0,1];
-    var tilesHtml='';
-    rows.forEach(function(dy){
-      cols.forEach(function(dx){
-        var px=dx*256-offX;
-        var py=dy*256-offY;
-        tilesHtml+='<img src="https://tile.openstreetmap.org/'+zoom+'/'+(tx+dx)+'/'+(ty+dy)+'.png"'+
-          ' style="position:absolute;left:calc(50% + '+px+'px);top:calc(50% + '+py+'px);width:256px;height:256px;image-rendering:crisp-edges"'+
-          ' crossorigin="anonymous"/>';
-      });
-    });
-    // Pin: ekranın merkezinde
-    var pinHtml='<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);z-index:10;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))">'+
-      '<svg width="32" height="44" viewBox="0 0 32 44" xmlns="http://www.w3.org/2000/svg">'+
-        '<path d="M16 0C7.163 0 0 7.163 0 16c0 12 16 28 16 28S32 28 32 16C32 7.163 24.837 0 16 0z" fill="#1c6b23"/>'+
-        '<circle cx="16" cy="16" r="7" fill="white"/>'+
-      '</svg></div>';
+    var d=0.003;
+    var bbox=(lng-d)+','+(lat-d*0.6)+','+(lng+d)+','+(lat+d*0.6);
+    var src='https://www.openstreetmap.org/export/embed.html?bbox='+bbox+'&layer=mapnik&marker='+lat+','+lng;
     var mapHtml=
-      '<div style="width:100%;height:100%;position:relative;overflow:hidden;background:#e8f0e0;border-radius:inherit">'+
-        tilesHtml+
-        pinHtml+
+      '<div style="width:100%;height:100%;position:relative;overflow:hidden;border-radius:inherit">'+
+        '<iframe src="'+src+'" style="width:100%;height:100%;border:0" loading="lazy"></iframe>'+
         '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,.95);padding:.65rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;z-index:10;border-top:1px solid rgba(0,0,0,.08)">'+
           '<div style="font-size:.82rem;color:#333;line-height:1.4"><strong style="color:#1c6b23">Meta Academy</strong><br/>Kozyatağı Mah. Lemi Atlı Sok. No:4/A, Kadıköy</div>'+
           '<a href="https://maps.app.goo.gl/YShj9dYGpVnDvxpn9?g_st=iw" target="_blank" rel="noopener" '+
              'style="padding:.45rem 1rem;background:#1c6b23;color:white;border-radius:999px;font-size:.78rem;font-weight:700;text-decoration:none;flex-shrink:0;white-space:nowrap;display:inline-flex;align-items:center;gap:.3rem">'+
             '📍 Google Maps&#39;ta A\u00e7</a>'+
         '</div>'+
-        '<div style="position:absolute;top:4px;right:4px;font-size:.55rem;color:#555;padding:.15rem .3rem;background:rgba(255,255,255,.8);border-radius:2px;z-index:10">© OpenStreetMap</div>'+
       '</div>';
     mapCt.innerHTML=mapHtml;
   }else if(mapCt){mapCt.style.display='none';} document.getElementById('footerContact').innerHTML='<h4>İletişim</h4><div class="ft-ci"><span class="icon">📍</span><span>'+c.a1+'<br/>'+c.a2+'</span></div><div class="ft-ci"><span class="icon">📞</span><a href="https://wa.me/'+c.wa+'">'+c.phone+'</a></div><div class="ft-ci"><span class="icon">✉️</span><a href="mailto:'+c.email+'">'+c.email+'</a></div>';
