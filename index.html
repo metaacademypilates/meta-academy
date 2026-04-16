@@ -122,20 +122,50 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--green);b
 .scroll-ind{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%)}
 .scroll-ind div{width:24px;height:40px;border:2px solid rgba(255,255,255,.3);border-radius:999px;display:flex;justify-content:center;padding:.4rem}
 .scroll-dot{width:5px;height:10px;border-radius:999px;background:var(--cream)}
-/* Services */
-#services{padding:6rem 0;background:white}
+/* Services — editorial magazine style (light) */
+#services{padding:0;background:var(--cream)}
 .sec-hdr{text-align:center;margin-bottom:4rem}
-.svc-wrap{display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem}
-.svc-card{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--cream);transition:all .4s;cursor:pointer;width:260px;flex-shrink:0}
-@media(max-width:600px){.svc-card{width:100%}}
-.svc-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-green)}
-.svc-img{height:176px;overflow:hidden;position:relative}
-.svc-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
-.svc-card:hover .svc-img img{transform:scale(1.08)}
-.svc-img-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7) 0%,transparent 50%)}
-.svc-img-title{position:absolute;bottom:.75rem;left:1rem;font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,.3)}
-.svc-body{padding:1.1rem}
-.svc-desc{font-size:.88rem;color:var(--muted);line-height:1.65}
+.svc-intro{display:grid;grid-template-columns:1fr 1fr;gap:3rem;padding:5rem 0 2rem;border-top:1px solid var(--border)}
+.svc-intro-label{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--green);font-weight:600;margin-bottom:1rem}
+.svc-intro h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:700;line-height:1.05;color:var(--text)}
+.svc-intro h2 em{font-style:italic;color:var(--green)}
+.svc-intro p{font-size:.92rem;color:var(--muted);line-height:1.8;align-self:end}
+@media(max-width:800px){.svc-intro{grid-template-columns:1fr;gap:1.5rem;padding:3rem 0 1.5rem}}
+/* Program blocks */
+.svc-program{padding:0 0 4rem;border-top:1px solid var(--border);margin-top:3rem;position:relative}
+.svc-prog-hdr{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1.5rem;padding:2rem 0}
+.svc-prog-num{font-family:'Cormorant Garamond',serif;font-size:clamp(4rem,8vw,6rem);line-height:1;color:rgba(28,107,35,.12);font-weight:700;letter-spacing:-.02em}
+.svc-prog-title h3{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;line-height:.95;color:var(--text)}
+.svc-prog-title .sub{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-top:.5rem;font-weight:600}
+.svc-prog-badge{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green);border:1px solid var(--green);padding:.35rem .9rem;border-radius:3px;font-weight:600;white-space:nowrap}
+@media(max-width:800px){.svc-prog-hdr{grid-template-columns:auto 1fr}.svc-prog-badge{display:none}}
+/* Benefit grid */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+@media(max-width:900px){.svc-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.svc-grid{grid-template-columns:1fr}}
+.svc-card{background:white;padding:2.2rem;position:relative;transition:background .35s}
+.svc-card:hover{background:var(--cream)}
+.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:linear-gradient(90deg,var(--green),rgba(28,107,35,.1));opacity:0;transition:opacity .35s}
+.svc-card:hover::before{opacity:1}
+.svc-icon{width:46px;height:46px;border:1.5px solid rgba(28,107,35,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;font-size:1.2rem;transition:all .3s}
+.svc-card:hover .svc-icon{border-color:var(--green);background:var(--green-light);transform:scale(1.08)}
+.svc-card h4{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:.5rem;line-height:1.1}
+.svc-card p{font-size:.84rem;color:var(--muted);line-height:1.8}
+.svc-card-wide{grid-column:span 2;display:flex;gap:2.5rem;align-items:flex-start}
+@media(max-width:600px){.svc-card-wide{grid-column:span 1;flex-direction:column;gap:1.2rem}}
+.svc-stat{flex-shrink:0}
+.svc-stat .num{font-family:'Cormorant Garamond',serif;font-size:4.5rem;line-height:1;color:var(--green);font-weight:700;letter-spacing:-.02em}
+.svc-stat .unit{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:.3rem;line-height:1.4}
+/* Testimonial strip */
+.svc-quote{background:var(--green);border-radius:6px;padding:1.8rem 2.2rem;margin-top:1px;display:flex;align-items:center;gap:1.5rem;position:relative;overflow:hidden}
+.svc-quote::before{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06)}
+.svc-quote-mark{font-family:'Cormorant Garamond',serif;font-size:4.5rem;line-height:.7;color:rgba(255,255,255,.15);flex-shrink:0}
+.svc-quote p{font-size:.88rem;font-style:italic;color:rgba(255,255,255,.9);line-height:1.7}
+.svc-quote cite{display:block;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:.4rem;font-style:normal}
+@media(max-width:600px){.svc-quote{flex-direction:column;gap:.8rem;text-align:center}}
+/* Reveal */
+.svc-reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.svc-reveal.visible{opacity:1;transform:none}
 /* Gallery Marquee */
 #gallery{padding:6rem 0 4rem;background:var(--cream-dark);overflow:hidden}
 .ig-banner{display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;background:white;border-radius:var(--radius);border:1px solid var(--border);margin:0 auto 2.5rem;text-decoration:none;transition:box-shadow .25s;max-width:600px}
@@ -386,12 +416,16 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(c
 </section>
 
 <section id="services"><div class="container">
-  <div class="sec-hdr">
-    <span class="sec-badge">Hizmetlerimiz</span>
-    <h2 class="sec-title">Size Özel <span class="accent">Çözümler</span></h2>
-    <p class="sec-sub" style="margin:0 auto">Meta Academy olarak, her bireyin ihtiyacına yönelik kapsamlı ve bilimsel yaklaşımla hizmet sunuyoruz.</p>
+  <!-- Editorial intro -->
+  <div class="svc-intro svc-reveal">
+    <div>
+      <div class="svc-intro-label">Hizmetlerimiz</div>
+      <h2>BİLİMSEL<br>TEMELLER,<br><em>GERÇEK SONUÇLAR</em></h2>
+    </div>
+    <p>Her bireyin vücudu farklıdır. Meta Academy programları; Pilates'in kontrol odaklı yaklaşımını, EMS teknolojisinin derin kas aktivasyonunu ve postür egzersizlerinin yapısal dengesini bir araya getirerek kişiselleştirilmiş, sürdürülebilir dönüşüm sunar.</p>
   </div>
-  <div class="svc-wrap" id="svcWrap"></div>
+  <!-- Dynamic program blocks -->
+  <div id="svcWrap"></div>
 </div></section>
 
 <section id="gallery"><div class="container">
@@ -573,7 +607,7 @@ const SITE_URL = 'https://metaacademy.com';
 
 
 
-const K={hero:'ma_hero',svc:'ma_svc',steps:'ma_hiw',gal:'ma_gal',hyg:'ma_hyg',rev:'ma_rev',contact:'ma_con',sts:'ma_st',appts:'ma_appt'};
+const K={hero:'ma_hero',svc:'ma_svc',svc_meta:'ma_svc_meta',steps:'ma_hiw',gal:'ma_gal',hyg:'ma_hyg',rev:'ma_rev',contact:'ma_con',sts:'ma_st',appts:'ma_appt'};
 const DEF={
   hero:{badge:'Kadıköy Kozyatağı • Premium Stüdyo',t1:'Bilim Temelli',t2:'EMS & Pilates & Performans',t3:'Stüdyosu',sub:'Ücretsiz postür analizi, kişiye özel programlar ve uzman eğitmenlerle ağrısız, güçlü ve dengeli bir beden.',cta:'Ücretsiz Postür Analizi Randevusu Al',t1v:'Kişiye Özel',t1l:'Antrenman Programı',t2v:'Uzman Eğitmen',t2l:'Spor Bilimci & Fizyoterapist Kadro',t3v:'Bilimsel',t3l:'Değerlendirme Yöntemi',btn_randevu:'Ücretsiz Randevu Al',btn_form:'Form Bırak',btn_flt:'🏃 Ücretsiz Postür Analizi Randevusu Al'},
   svc:[
@@ -586,6 +620,36 @@ const DEF={
     {key:'workshop',title:'Workshop & Seminerler',desc:'Uzman eğitmenlerimizle postür, beslenme ve performans konularında seminerler.',img:'https://lh3.googleusercontent.com/p/AF1QipMzz3RptKbd6PufQrrcCtOJUIdGr5T4q8J6CmrX=w800-h600-k-no'},
     {key:'ozel',title:'Özel Programlar',desc:'Sezona özel detoks, yaz bedeni ve maraton hazırlık programları.',img:'https://lh3.googleusercontent.com/p/AF1QipOZxygZrEOuxqv8wkDv1cD3z1wJkFl1DqMgAxpW=w800-h600-k-no'}
   ],
+  svc_meta:{
+    pilates:{sub:'Reformer · Mat · Klinik Pilates',badge:'Melisa Eğitmenliğinde',
+      benefits:[
+        {icon:'🎯',t:'Core Güçlendirme',d:'Karın, bel ve pelvik taban kaslarını derinlemesine aktive eden hareketler, vücudun stabilite merkezini güçlendirir.'},
+        {icon:'🔄',t:'Esneklik & Hareketlilik',d:'Kontrollü esneme ve eklem hareketliliği egzersizleri, hareket açıklığını artırır.'},
+        {icon:'⚖️',t:'Vücut Dengesi',d:'Sağ-sol ve ön-arka kas dengesizliklerini gidermeye odaklanan programlar, kronik ağrı riskini azaltır.'}
+      ],wide:{num:'8',unit:'Haftalık Ortalama<br>Görünür Değişim',t:'Zihin–Beden Bağlantısı',d:'Nefes kontrolü ve odaklanma teknikleri kortizol seviyesini düşürür, uyku kalitesini artırır. Klinik Pilates, uzman fizyoterapist denetiminde uygulanır.'},
+      quote:{text:'Reformer Pilates\'e başladıktan 6 hafta sonra kronik bel ağrım büyük ölçüde azaldı.',cite:'Selin K., Meta Academy Üyesi'}},
+    atletik:{sub:'Branşa Özel Kuvvet · Hız · Çeviklik',badge:'Engin Eğitmenliğinde',
+      benefits:[
+        {icon:'💪',t:'Fonksiyonel Güç',d:'Spor branşına özel kuvvet ve patlayıcılık antrenmanları ile atletik kapasiteyi artırır.'},
+        {icon:'🏆',t:'Performans Optimizasyonu',d:'Biyomekanik analiz ile güç sızıntıları tespit edilir, kişiye özel düzeltici protokoller uygulanır.'},
+        {icon:'🛡️',t:'Yaralanma Önleme',d:'Kas dengesizlikleri ve zayıf stabilizatör kaslar güçlendirilerek sakatlanma riski azaltılır.'}
+      ],wide:{num:'3X',unit:'Performans Artışı<br>Sporcular İçin',t:'Atletik Dönüşüm Programı',d:'Güç, hız, çeviklik ve dayanıklılığın temelini oluşturan işlevsel hareket örüntüleri üzerine inşa edilmiş programlar.'},
+      quote:{text:'Engin hoca ile çalışmaya başladıktan sonra sprint sürelerimde gözle görülür iyileşme oldu.',cite:'Barış T., Meta Academy Üyesi'}},
+    postur:{sub:'Postürel Düzeltme · Ağrı Yönetimi',badge:'Uzman Eğitmen Eşliğinde',
+      benefits:[
+        {icon:'🖥️',t:'Masa Başı Sendromu',d:'8+ saat oturan bireyler için özel protokoller; öne çıkmış baş ve yuvarlak omuzları düzeltir.'},
+        {icon:'🧠',t:'Propriosepsiyon Gelişimi',d:'Vücudun uzaysal farkındalığını artıran denge egzersizleri, nöromüsküler kontrolü güçlendirir.'},
+        {icon:'🏋️',t:'Omurga Sağlığı',d:'Derin sırt, karın ve core bölgesini güçlendiren egzersizler, omurganın doğal hizasını destekler.'}
+      ],wide:{num:'10',unit:'Seans Sonrası<br>Belirgin İyileşme',t:'Kişiye Özel Postür Analizi',d:'Ücretsiz postür analizi ile mevcut duruşunuz değerlendirilir ve size özel düzeltici egzersiz programı oluşturulur.'},
+      quote:{text:'Yıllardır çektiğim boyun ağrısı 10 seans sonra neredeyse tamamen geçti.',cite:'Ladin O., Meta Academy Üyesi'}},
+    ems:{sub:'Elektro Kas Stimülasyonu · 20 dk/seans',badge:'Haftada 1 Seans Yeterli',
+      benefits:[
+        {icon:'🔥',t:'Yağ Yakımı',d:'Aynı anda birden fazla büyük kas grubu aktive olur. Metabolizma hızlanır, vücut yağ depolarını enerji olarak kullanır.'},
+        {icon:'💪',t:'Kas Sıkılaşma',d:'Derin kas lifleri yüksek yoğunlukta çalıştırılarak kas tonusu artar, bölgesel incelme gözlemlenir.'},
+        {icon:'🕐',t:'Zamandan Tasarruf',d:'20 dakikalık EMS seansı, saatler süren klasik antrenmanlarla eşdeğer kas aktivasyonu sağlar.'}
+      ],wide:{num:'98%',unit:'Kas Aktivasyon<br>Oranı (Klasik: %30)',t:'Selülit Azaltma & Doğum Sonrası',d:'Bölgesel dolaşımı destekler, cilt altı kas dokusunun sıkılaşmasına katkı sağlar. Doğum sonrası güvenli toparlanma sunar.'},
+      quote:{text:'Haftada bir 20 dakika ile iki ayda beklediğimden çok daha fazla sonuç aldım.',cite:'Ayşe M., Meta Academy Üyesi'}}
+  },
   steps:[
     {key:'step1',title:'Değerlendirme',desc:'Ön görüşme ve kapsamlı analiz ile mevcut durumunuzu değerlendiriyoruz. Postür analizi, hareket taraması ve hedef belirleme.'},
     {key:'step2',title:'Planlama',desc:'Size özel program tasarımı. Hedeflerinize uygun, bilimsel temelli ve sürdürülebilir bir yol haritası oluşturuyoruz.'},
@@ -620,14 +684,14 @@ const DEF={
 // ── DEF yüklendikten sonra localStorage'ı doldur (versiyon kontrolü) ──
 (function(){
   try{
-    var VER='3.0'; // Bu numarayı değiştirince tüm veri DEF'e döner
-    var dataKeys={hero:'ma_hero',svc:'ma_svc',hiw:'ma_hiw',gal:'ma_gal',
+    var VER='4.0'; // Bu numarayı değiştirince tüm veri DEF'e döner
+    var dataKeys={hero:'ma_hero',svc:'ma_svc',svc_meta:'ma_svc_meta',hiw:'ma_hiw',gal:'ma_gal',
                   hyg:'ma_hyg',rev:'ma_rev',contact:'ma_con',sts:'ma_st'};
     var stored=localStorage.getItem('ma_ver');
     if(stored!==VER){
       // Versiyon yeni → svc ve sts'yi sıfırla (bozuk veri temizlenir)
       // appt ve gal dokunma (kullanıcı verisi)
-      ['ma_svc','ma_st','ma_hero'].forEach(function(k){
+      ['ma_svc','ma_svc_meta','ma_st','ma_hero'].forEach(function(k){
         localStorage.removeItem(k);
       });
       localStorage.setItem('ma_ver',VER);
@@ -669,35 +733,66 @@ function renderHero(){
 }
 
 function renderSvc(){
-  const list=ld('svc'),sts=ld('sts');
-  const visible=list.filter(s=>isOn(sts,s.key+'_title'));
-  const wrap=document.getElementById('svcWrap');
+  var meta=ld('svc_meta');
+  var list=ld('svc'),sts=ld('sts');
+  var mainKeys=['pilates','atletik','postur','ems'];
+  var visible=list.filter(function(s){return isOn(sts,s.key+'_title')});
+  var mains=visible.filter(function(s){return mainKeys.indexOf(s.key)!==-1});
+  var extras=visible.filter(function(s){return mainKeys.indexOf(s.key)===-1});
+  var wrap=document.getElementById('svcWrap');
   if(!wrap)return;
-  wrap.innerHTML=visible.map(s=>{
-    const imgHtml=s.img
-      ? '<div class="svc-img"><img src="'+s.img+'" alt="'+s.title+'" loading="lazy" decoding="async"/><div class="svc-img-ov"></div><span class="svc-img-title">'+s.title+'</span></div>'
-      : '<div class="svc-img svc-img-empty"><span class="svc-img-title">'+s.title+'</span></div>';
-    return '<div class="svc-card">'+imgHtml+'<div class="svc-body"><p class="svc-desc">'+s.desc+'</p></div></div>';
-  }).join('');
-  // Kırık/CORS engelli görseller için JS fallback
-  wrap.querySelectorAll('.svc-img img').forEach(function(img){
-    var fallback=function(){
-      var parent=img.parentElement;
-      if(parent&&!parent.classList.contains('svc-img-empty')){
-        parent.classList.add('svc-img-empty');
-        img.style.display='none';
-      }
-    };
-    img.onerror=fallback;
-    // CORS engelinde onerror tetiklenmez — timeout ile kontrol et
-    setTimeout(function(){
-      if(img.naturalWidth===0&&img.complete){fallback();}
-    },3000);
+  var html='';
+  mains.forEach(function(s,i){
+    var m=meta[s.key];if(!m)return;
+    var num=('0'+(i+1)).slice(-2);
+    html+='<div class="svc-program svc-reveal">'
+      +'<div class="svc-prog-hdr">'
+        +'<div class="svc-prog-num">'+num+'</div>'
+        +'<div class="svc-prog-title"><h3>'+s.title.toUpperCase()+'</h3><div class="sub">'+m.sub+'</div></div>'
+        +'<div class="svc-prog-badge">'+m.badge+'</div>'
+      +'</div>'
+      +'<div class="svc-grid">';
+    m.benefits.forEach(function(b,bi){
+      html+='<div class="svc-card svc-reveal" style="transition-delay:'+(bi*100)+'ms">'
+        +'<div class="svc-icon">'+b.icon+'</div>'
+        +'<h4>'+b.t+'</h4><p>'+b.d+'</p></div>';
+    });
+    // Wide card
+    html+='<div class="svc-card svc-card-wide svc-reveal" style="transition-delay:300ms">'
+      +'<div class="svc-stat"><div class="num">'+m.wide.num+'</div><div class="unit">'+m.wide.unit+'</div></div>'
+      +'<div><h4>'+m.wide.t+'</h4><p>'+m.wide.d+'</p></div></div>';
+    html+='</div>';
+    // Quote
+    html+='<div class="svc-quote svc-reveal">'
+      +'<div class="svc-quote-mark">"</div>'
+      +'<div><p>'+m.quote.text+'</p><cite>— '+m.quote.cite+'</cite></div></div>';
+    html+='</div>';
   });
-  const dsl=document.getElementById('dropSvcLinks');
-  if(dsl)dsl.innerHTML=visible.map(s=>'<a href="javascript:void(0)" onclick="scrollTo(\'services\')">'+s.title+'</a>').join('');
-  const msl=document.getElementById('mobSvcLinks');
-  if(msl)msl.innerHTML=visible.map(s=>'<a href="javascript:void(0)" onclick="closeMenu();scrollTo(\'services\')">'+s.title+'</a>').join('');
+  // Extras in simple grid
+  if(extras.length){
+    html+='<div class="svc-program svc-reveal"><div class="svc-prog-hdr">'
+      +'<div class="svc-prog-num">'+('0'+(mains.length+1)).slice(-2)+'</div>'
+      +'<div class="svc-prog-title"><h3>ÖZEL PROGRAMLAR</h3><div class="sub">Ek Hizmetler & Etkinlikler</div></div>'
+      +'<div class="svc-prog-badge">Yeni</div></div>'
+      +'<div class="svc-grid">';
+    var extraIcons={karma:'🎯',acikkapi:'🚪',workshop:'📚',ozel:'⭐'};
+    extras.forEach(function(s,i){
+      html+='<div class="svc-card svc-reveal" style="transition-delay:'+(i*100)+'ms">'
+        +'<div class="svc-icon">'+(extraIcons[s.key]||'✨')+'</div>'
+        +'<h4>'+s.title+'</h4><p>'+s.desc+'</p></div>';
+    });
+    html+='</div></div>';
+  }
+  wrap.innerHTML=html;
+  // Scroll reveal
+  var svcObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');svcObs.unobserve(e.target);}});
+  },{threshold:0.06});
+  wrap.querySelectorAll('.svc-reveal').forEach(function(el){svcObs.observe(el);});
+  var dsl=document.getElementById('dropSvcLinks');
+  if(dsl)dsl.innerHTML=visible.map(function(s){return '<a href="javascript:void(0)" onclick="scrollTo(\'services\')">'+s.title+'</a>'}).join('');
+  var msl=document.getElementById('mobSvcLinks');
+  if(msl)msl.innerHTML=visible.map(function(s){return '<a href="javascript:void(0)" onclick="closeMenu();scrollTo(\'services\')">'+s.title+'</a>'}).join('');
 }
 function renderGal(){
   const imgs=ld('gal');
