@@ -788,7 +788,7 @@ function renderSvc(){
   var svcObs=new IntersectionObserver(function(entries){
     entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');svcObs.unobserve(e.target);}});
   },{threshold:0.06});
-  wrap.querySelectorAll('.svc-reveal').forEach(function(el){svcObs.observe(el);});
+  document.querySelectorAll('#services .svc-reveal').forEach(function(el){svcObs.observe(el);});
   var dsl=document.getElementById('dropSvcLinks');
   if(dsl)dsl.innerHTML=visible.map(function(s){var target=mainKeys.indexOf(s.key)!==-1?'svc-'+s.key:'svc-extras';return '<a href="#'+target+'" onclick="event.preventDefault();setTimeout(function(){goTo(\''+target+'\')},100)">'+s.title+'</a>'}).join('');
   var msl=document.getElementById('mobSvcLinks');
