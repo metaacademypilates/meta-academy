@@ -316,11 +316,12 @@ img{max-width:100%;display:block}
     <div class="login-card">
       <!-- Brand -->
       <div class="login-logo-area">
-        <div class="login-logo-icon">MA</div>
+        <img id="adminLogo" class="login-logo-img" style="height:52px;border-radius:.5rem" src="" alt="Meta Academy"/>
         <div>
           <div class="login-logo-text">Meta Academy</div>
           <div class="login-logo-sub">Yönetim Paneli</div>
         </div>
+        <script>(function(){fetch('/').then(r=>r.text()).then(h=>{var m=h.match(/src="(data:image[^"]+)"/);if(m)document.getElementById('adminLogo').src=m[1];}).catch(()=>{});})();</script>
       </div>
 
 
