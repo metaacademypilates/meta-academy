@@ -777,7 +777,7 @@ function renderSvc(){
       +'<div class="svc-grid">';
     var extraIcons={karma:'🎯',acikkapi:'🚪',workshop:'📚',ozel:'⭐'};
     extras.forEach(function(s,i){
-      html+='<div class="svc-card svc-reveal" style="transition-delay:'+(i*100)+'ms">'
+      html+='<div class="svc-card svc-reveal" id="svc-'+s.key+'" style="transition-delay:'+(i*100)+'ms">'
         +'<div class="svc-icon">'+(extraIcons[s.key]||'✨')+'</div>'
         +'<h4>'+s.title+'</h4><p>'+s.desc+'</p></div>';
     });
@@ -790,9 +790,9 @@ function renderSvc(){
   },{threshold:0.06});
   wrap.querySelectorAll('.svc-reveal').forEach(function(el){svcObs.observe(el);});
   var dsl=document.getElementById('dropSvcLinks');
-  if(dsl)dsl.innerHTML=visible.map(function(s){var target=mainKeys.indexOf(s.key)!==-1?'svc-'+s.key:'services';return '<a href="#'+target+'" onclick="event.preventDefault();setTimeout(function(){goTo(\''+target+'\')},50)">'+s.title+'</a>'}).join('');
+  if(dsl)dsl.innerHTML=visible.map(function(s){var target='svc-'+s.key;return '<a href="#'+target+'" onclick="event.preventDefault();setTimeout(function(){goTo(\''+target+'\')},50)">'+s.title+'</a>'}).join('');
   var msl=document.getElementById('mobSvcLinks');
-  if(msl)msl.innerHTML=visible.map(function(s){var target=mainKeys.indexOf(s.key)!==-1?'svc-'+s.key:'services';return '<a href="#'+target+'" onclick="event.preventDefault();closeMenu();setTimeout(function(){goTo(\''+target+'\')},50)">'+s.title+'</a>'}).join('');
+  if(msl)msl.innerHTML=visible.map(function(s){var target='svc-'+s.key;return '<a href="#'+target+'" onclick="event.preventDefault();closeMenu();setTimeout(function(){goTo(\''+target+'\')},50)">'+s.title+'</a>'}).join('');
 }
 function renderGal(){
   const imgs=ld('gal');
