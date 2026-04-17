@@ -368,6 +368,210 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(c
 #heroTrust{
   animation:heroSubFade .8s ease 1.1s both;
 }
+
+/* ═══════════════════════════════════════════════
+   PREMIUM DEPTH & DIMENSIONAL DESIGN SYSTEM
+   ═══════════════════════════════════════════════ */
+
+/* ── Enhanced CSS Custom Properties ── */
+:root{
+  --depth-xs:0 1px 2px rgba(0,0,0,.04),0 2px 4px rgba(0,0,0,.03);
+  --depth-sm:0 2px 4px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.06);
+  --depth-md:0 4px 8px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.08),0 16px 40px rgba(0,0,0,.04);
+  --depth-lg:0 8px 16px rgba(0,0,0,.06),0 16px 48px rgba(0,0,0,.1),0 32px 64px rgba(0,0,0,.06);
+  --depth-xl:0 12px 24px rgba(0,0,0,.08),0 24px 64px rgba(0,0,0,.12),0 48px 96px rgba(0,0,0,.08);
+  --glass-bg:rgba(255,255,255,.65);
+  --glass-border:rgba(255,255,255,.35);
+  --glass-blur:16px;
+  --perspective:1200px;
+  --tilt-max:4deg;
+  --transition-premium:cubic-bezier(.22,1,.36,1);
+}
+
+/* ── Hero Layered Depth & Parallax ── */
+#hero{perspective:var(--perspective)}
+.hero-bg{transition:transform .1s linear;will-change:transform}
+
+/* Hero floating light orbs */
+.hero-ov::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(34,130,43,.25) 0%,transparent 70%);top:-10%;left:-5%;animation:heroOrbFloat 8s ease-in-out infinite;z-index:0;pointer-events:none}
+.hero-ov::after{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(245,240,232,.08) 0%,transparent 70%);bottom:-5%;right:-5%;animation:heroOrbFloat 10s ease-in-out infinite reverse;z-index:0;pointer-events:none}
+@keyframes heroOrbFloat{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(20px,-15px) scale(1.05)}50%{transform:translate(-10px,20px) scale(.97)}75%{transform:translate(15px,10px) scale(1.03)}}
+
+/* Hero content layered depth */
+.hero-ct{transform-style:preserve-3d}
+.hero-badge{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);box-shadow:0 4px 16px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.1);transform:translateZ(40px)}
+.hero-title{transform:translateZ(60px);text-shadow:0 4px 24px rgba(0,0,0,.3),0 2px 8px rgba(0,0,0,.2)}
+#heroSub{transform:translateZ(30px)}
+.hero-trust{transform:translateZ(20px);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top-color:rgba(255,255,255,.12);border-radius:.75rem;padding:2rem 3rem;background:rgba(255,255,255,.04)}
+.trust-item{transition:transform .4s var(--transition-premium)}
+.trust-item:hover{transform:translateY(-3px)}
+
+/* ── Scroll indicator premium ── */
+.scroll-ind div{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(255,255,255,.06)}
+
+/* ── Section Perspective Transitions ── */
+.section-3d{transform-style:preserve-3d;perspective:var(--perspective)}
+.sec-enter{opacity:0;transform:translateY(40px) rotateX(2deg);transition:opacity .9s var(--transition-premium),transform .9s var(--transition-premium)}
+.sec-enter.in-view{opacity:1;transform:translateY(0) rotateX(0)}
+
+/* ── Service Cards — Premium Tilt + Depth ── */
+.svc-card{
+  transform-style:preserve-3d;
+  transition:background .35s,transform .5s var(--transition-premium),box-shadow .5s var(--transition-premium);
+  will-change:transform;
+  box-shadow:var(--depth-xs);
+}
+.svc-card:hover{
+  background:var(--cream);
+  box-shadow:var(--depth-md);
+  z-index:2;
+}
+.svc-card .svc-icon{transform:translateZ(20px)}
+.svc-card h4{transform:translateZ(10px)}
+
+/* Wide stat card depth */
+.svc-card-wide{transition:box-shadow .5s var(--transition-premium)}
+.svc-card-wide:hover{box-shadow:var(--depth-sm)}
+.svc-stat .num{
+  background:linear-gradient(135deg,var(--green),hsl(145,55%,32%));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 2px 4px rgba(28,107,35,.15));
+}
+
+/* ── Testimonial Strip — Glassmorphism ── */
+.svc-quote{
+  background:linear-gradient(135deg,var(--green) 0%,hsl(145,62%,22%) 100%);
+  box-shadow:var(--depth-md),inset 0 1px 0 rgba(255,255,255,.08);
+  overflow:hidden;
+}
+.svc-quote::after{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.06),transparent 70%);border-radius:50%;animation:heroOrbFloat 12s ease-in-out infinite}
+
+/* ── Program Numbers — Dimensional ── */
+.svc-prog-num{
+  background:linear-gradient(180deg,rgba(28,107,35,.12) 0%,rgba(28,107,35,.03) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 2px 8px rgba(28,107,35,.08));
+}
+
+/* ── Process/Hygiene — Premium Glass ── */
+.proc-hyg-inner{
+  box-shadow:var(--depth-xl);
+  border:1px solid rgba(255,255,255,.08);
+}
+.proc-side-left{position:relative}
+.proc-side-left::before{content:'';position:absolute;top:0;right:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.08),transparent)}
+.proc-num{
+  box-shadow:0 4px 12px rgba(28,107,35,.25),inset 0 1px 0 rgba(255,255,255,.15);
+  transition:transform .3s var(--transition-premium),box-shadow .3s;
+}
+.proc-step:hover .proc-num{transform:scale(1.1);box-shadow:0 6px 20px rgba(28,107,35,.35)}
+
+/* ── Review Cards — Depth + Lift ── */
+.rev-card{
+  box-shadow:var(--depth-sm);
+  transition:transform .45s var(--transition-premium),box-shadow .45s var(--transition-premium);
+  transform-style:preserve-3d;
+}
+.rev-card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--depth-lg);
+}
+
+/* ── Contact Cards — Premium Hover ── */
+.contact-card{
+  transition:transform .4s var(--transition-premium),box-shadow .4s var(--transition-premium),border-color .4s;
+  box-shadow:var(--depth-xs);
+}
+.contact-card:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--depth-md);
+  border-color:rgba(28,107,35,.2);
+}
+.contact-icon{
+  transition:transform .4s var(--transition-premium),box-shadow .3s;
+}
+.contact-card:hover .contact-icon{
+  transform:scale(1.08) translateY(-2px);
+  box-shadow:0 4px 12px rgba(28,107,35,.15);
+}
+
+/* ── Gallery Items — Depth ── */
+.marquee-item{
+  box-shadow:var(--depth-md);
+  transition:transform .5s var(--transition-premium),box-shadow .5s var(--transition-premium);
+}
+.marquee-item:hover{
+  transform:scale(1.03) translateY(-4px);
+  box-shadow:var(--depth-xl);
+}
+
+/* ── Map Container — Premium ── */
+.map-ct{box-shadow:var(--depth-lg);border:none}
+
+/* ── Header — Premium Glassmorphism ── */
+header{
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  background:rgba(21,79,26,.92);
+  box-shadow:0 1px 0 rgba(255,255,255,.06),0 8px 32px rgba(0,0,0,.2);
+}
+
+/* ── Buttons — Premium Depth ── */
+.btn-primary{box-shadow:0 4px 16px rgba(28,107,35,.3),0 2px 4px rgba(28,107,35,.2),inset 0 1px 0 rgba(255,255,255,.1)}
+.btn-primary:hover{box-shadow:0 8px 28px rgba(28,107,35,.4),0 4px 8px rgba(28,107,35,.2);transform:translateY(-3px)}
+.btn-cream{box-shadow:0 4px 16px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.8)}
+.btn-cream:hover{box-shadow:0 8px 28px rgba(0,0,0,.15);transform:translateY(-3px)}
+#flt-cta{box-shadow:0 8px 32px rgba(28,107,35,.35),0 2px 8px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.1)}
+#flt-cta:hover{box-shadow:0 12px 40px rgba(28,107,35,.45),0 4px 12px rgba(0,0,0,.15)}
+
+/* ── Footer — Premium Light ── */
+footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
+.social-link{box-shadow:inset 0 1px 0 rgba(255,255,255,.1);transition:all .3s var(--transition-premium)}
+.social-link:hover{transform:translateY(-3px);box-shadow:0 4px 16px rgba(245,240,232,.2)}
+
+/* ── Modal — Premium Glassmorphism ── */
+.modal-ov{backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);background:rgba(0,0,0,.6)}
+.modal{box-shadow:var(--depth-xl),0 0 0 1px rgba(255,255,255,.08)}
+
+/* ── Dropdown — Premium Glass ── */
+.drop-menu{
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  background:rgba(255,255,255,.92);
+  box-shadow:var(--depth-lg),0 0 0 1px rgba(0,0,0,.04);
+}
+
+/* ── Ambient Glow Lines ── */
+@keyframes glowPulse{0%,100%{opacity:.4}50%{opacity:.8}}
+.svc-program::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(28,107,35,.2),transparent);
+  animation:glowPulse 4s ease-in-out infinite;
+}
+
+/* ── Smooth Scroll Snap Feel ── */
+@keyframes gentleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.scroll-dot{animation:gentleFloat 2s ease-in-out infinite}
+
+/* ── Premium Reveal Animation ── */
+.svc-reveal{transition:opacity .8s var(--transition-premium),transform .8s var(--transition-premium)}
+.svc-reveal.visible{opacity:1;transform:translateY(0) rotateX(0)}
+
+/* ── Reduced Motion ── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}
+  .svc-card,.rev-card,.contact-card,.marquee-item{transform:none!important}
+}
+
+/* ── Mobile Performance ── */
+@media(max-width:900px){
+  :root{--tilt-max:0deg;--perspective:none}
+  .hero-ct{transform-style:flat}
+  .hero-badge,.hero-title,#heroSub,.hero-trust{transform:none}
+  .svc-card{transform-style:flat}
+  .svc-card .svc-icon,.svc-card h4{transform:none}
+  .hero-ov::before,.hero-ov::after{display:none}
+}
 </style>
 </head>
 <body>
@@ -1140,6 +1344,121 @@ try{
       if(s&&s.parentNode===parent){parent.insertBefore(s,anchor);anchor=s.nextSibling;}
     });
   }).catch(function(){});
+})();
+</script>
+
+<!-- PREMIUM DEPTH ENGINE -->
+<script>
+(function(){
+  'use strict';
+  var isMobile=window.innerWidth<901;
+
+  /* ── 1. Hero Parallax on Mouse Move (PC only) ── */
+  if(!isMobile){
+    var heroEl=document.getElementById('hero');
+    var heroBg=document.getElementById('heroBgEl');
+    var heroOv=document.getElementById('heroOvEl');
+    var heroCanvas=document.getElementById('heroCanvas');
+    var heroCt=document.querySelector('.hero-ct');
+    var ticking=false;
+
+    if(heroEl){
+      heroEl.addEventListener('mousemove',function(e){
+        if(ticking)return;
+        ticking=true;
+        requestAnimationFrame(function(){
+          var rect=heroEl.getBoundingClientRect();
+          var mx=(e.clientX-rect.left)/rect.width-.5;
+          var my=(e.clientY-rect.top)/rect.height-.5;
+          /* Subtle parallax layers */
+          if(heroBg)heroBg.style.transform='translate('+(-mx*15)+'px,'+(-my*10)+'px) scale(1.04)';
+          if(heroCanvas)heroCanvas.style.transform='translate('+(-mx*8)+'px,'+(-my*6)+'px)';
+          if(heroOv)heroOv.style.transform='translate('+(-mx*5)+'px,'+(-my*4)+'px)';
+          /* Content subtle counter-move */
+          if(heroCt)heroCt.style.transform='translate('+( mx*6)+'px,'+(my*4)+'px)';
+          ticking=false;
+        });
+      });
+      heroEl.addEventListener('mouseleave',function(){
+        [heroBg,heroCanvas,heroOv].forEach(function(el){if(el)el.style.transform='';});
+        if(heroCt)heroCt.style.transform='';
+      });
+    }
+  }
+
+  /* ── 2. Service Card Tilt Effect (PC only) ── */
+  if(!isMobile){
+    function initTilt(card){
+      card.addEventListener('mousemove',function(e){
+        var rect=card.getBoundingClientRect();
+        var x=(e.clientX-rect.left)/rect.width;
+        var y=(e.clientY-rect.top)/rect.height;
+        var tiltX=(y-.5)*-6;
+        var tiltY=(x-.5)*6;
+        card.style.transform='perspective(800px) rotateX('+tiltX+'deg) rotateY('+tiltY+'deg) scale(1.02)';
+      });
+      card.addEventListener('mouseleave',function(){
+        card.style.transform='';
+      });
+    }
+    document.querySelectorAll('.svc-card').forEach(initTilt);
+    document.querySelectorAll('.rev-card').forEach(initTilt);
+  }
+
+  /* ── 3. Section Scroll Reveal with Perspective ── */
+  var secObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('in-view');
+        secObs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+
+  ['#services','#gallery','#how-it-works','#reviews','#contact'].forEach(function(sel){
+    var el=document.querySelector(sel);
+    if(el){el.classList.add('sec-enter');secObs.observe(el);}
+  });
+
+  /* ── 4. Parallax on Scroll (subtle depth layers) ── */
+  if(!isMobile){
+    var parallaxEls=[];
+    document.querySelectorAll('.svc-prog-num,.proc-hyg-inner,.hero-trust').forEach(function(el){
+      parallaxEls.push({el:el,speed:parseFloat(el.dataset.speed)||0.04});
+    });
+    var lastScroll=0;
+    var scrollTicking=false;
+    window.addEventListener('scroll',function(){
+      if(scrollTicking)return;
+      scrollTicking=true;
+      requestAnimationFrame(function(){
+        var st=window.pageYOffset;
+        parallaxEls.forEach(function(item){
+          var rect=item.el.getBoundingClientRect();
+          if(rect.top<window.innerHeight&&rect.bottom>0){
+            var offset=(rect.top-window.innerHeight*.5)*item.speed;
+            item.el.style.transform='translateY('+offset+'px)';
+          }
+        });
+        scrollTicking=false;
+      });
+    },{passive:true});
+  }
+
+  /* ── 5. Ambient light cursor glow (PC only) ── */
+  if(!isMobile){
+    var glow=document.createElement('div');
+    glow.style.cssText='position:fixed;width:300px;height:300px;border-radius:50%;pointer-events:none;z-index:9999;mix-blend-mode:soft-light;background:radial-gradient(circle,rgba(28,107,35,.08),transparent 70%);transition:opacity .3s;opacity:0;transform:translate(-50%,-50%)';
+    document.body.appendChild(glow);
+    var glowVisible=false;
+    document.addEventListener('mousemove',function(e){
+      glow.style.left=e.clientX+'px';
+      glow.style.top=e.clientY+'px';
+      if(!glowVisible){glow.style.opacity='1';glowVisible=true;}
+    });
+    document.addEventListener('mouseleave',function(){glow.style.opacity='0';glowVisible=false;});
+  }
+
 })();
 </script>
 </body>
