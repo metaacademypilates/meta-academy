@@ -152,7 +152,10 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--green);b
 .svc-card h4{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:.5rem;line-height:1.1}
 .svc-card p{font-size:.84rem;color:var(--muted);line-height:1.8}
 .svc-card-wide{grid-column:span 2;display:flex;gap:2.5rem;align-items:flex-start}
-@media(max-width:600px){.svc-card-wide{grid-column:span 1;flex-direction:column;gap:1.2rem}}
+.svc-wide-img{flex:0 0 220px;height:180px;border-radius:.75rem;overflow:hidden;background:var(--cream-dark)}
+.svc-wide-img img{width:100%;height:100%;object-fit:cover}
+.svc-wide-img-empty{flex:0 0 220px;height:180px;border-radius:.75rem;background:linear-gradient(135deg,var(--green-light),rgba(28,107,35,0.06));display:flex;align-items:center;justify-content:center;font-size:2rem;opacity:.5}
+@media(max-width:600px){.svc-card-wide{grid-column:span 1;flex-direction:column;gap:1.2rem}.svc-wide-img,.svc-wide-img-empty{flex:none;width:100%;height:160px}}
 .svc-stat{flex-shrink:0}
 .svc-stat .num{font-family:'Cormorant Garamond',serif;font-size:4.5rem;line-height:1;color:var(--green);font-weight:700;letter-spacing:-.02em}
 .svc-stat .unit{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:.3rem;line-height:1.4}
@@ -964,7 +967,9 @@ function renderSvc(){
     // Wide card
     html+='<div class="svc-card svc-card-wide svc-reveal" style="transition-delay:300ms">'
       +'<div class="svc-stat"><div class="num">'+m.wide.num+'</div><div class="unit">'+m.wide.unit+'</div></div>'
-      +'<div><h4>'+m.wide.t+'</h4><p>'+m.wide.d+'</p></div></div>';
+      +'<div><h4>'+m.wide.t+'</h4><p>'+m.wide.d+'</p></div>'
+      +(m.wide.img ? '<div class="svc-wide-img"><img src="'+m.wide.img+'" alt="'+m.wide.t+'" loading="lazy"></div>' : '<div class="svc-wide-img-empty">📷</div>')
+      +'</div>';
     html+='</div>';
     // Quote
     html+='<div class="svc-quote svc-reveal">'
