@@ -1350,8 +1350,8 @@ function renderSvc(){
         </div>
         <div style="font-size:.72rem;font-weight:600;color:var(--muted-fg);margin-bottom:.35rem">Kart Görseli</div>
         <div style="padding:.5rem;background:var(--muted);border-radius:.5rem;margin-bottom:.75rem;display:flex;gap:.5rem;align-items:center">
-          <input class="inp" style="flex:1;font-size:.72rem" placeholder="Görsel URL yapıştırın..." value="${m.wide.img||''}" oninput="updMetaWide('${s.key}','img',this.value)"/>
-          ${m.wide.img ? `<img src="${m.wide.img}" style="width:48px;height:36px;object-fit:cover;border-radius:4px"/>` : ''}
+          <label style="cursor:pointer;padding:.35rem .7rem;background:var(--primary);color:#fff;border-radius:.4rem;font-size:.7rem;font-weight:600;white-space:nowrap">📷 Yükle<input type="file" accept="image/*" onchange="handleWideImg(event,'${s.key}')" style="display:none"/></label>
+          ${m.wide.img ? `<img src="${m.wide.img}" style="width:60px;height:44px;object-fit:cover;border-radius:6px"/><button onclick="removeWideImg('${s.key}')" style="background:none;border:none;cursor:pointer;font-size:.85rem;color:var(--danger,#e74c3c)" title="Görseli kaldır">✕</button>` : '<span style="font-size:.7rem;color:var(--muted-fg)">Henüz görsel yüklenmedi</span>'}
         </div>
         <div style="font-size:.72rem;font-weight:600;color:var(--muted-fg);margin-bottom:.35rem">Müşteri Yorumu</div>
         <div style="padding:.5rem;background:var(--muted);border-radius:.5rem;margin-bottom:.5rem">
@@ -1418,6 +1418,23 @@ function handleSvcImg(ev,key){
 function updMeta(key,field,val){const m=getMeta();if(m[key])m[key][field]=val;svMeta(m);}
 function updMetaBenefit(key,idx,field,val){const m=getMeta();if(m[key]&&m[key].benefits[idx])m[key].benefits[idx][field]=val;svMeta(m);}
 function updMetaWide(key,field,val){const m=getMeta();if(m[key]&&m[key].wide)m[key].wide[field]=val;svMeta(m);}
+function handleWideImg(ev,key){
+  const f=ev.target.files[0];if(!f)return;
+  const img=new Image();const r=new FileReader();
+  r.onload=e=>{
+    img.onload=()=>{
+      const max=800,c=document.createElement('canvas');
+      let w=img.width,h=img.height;
+      if(w>max){h=h*(max/w);w=max}
+      c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      const data=c.toDataURL('image/webp',0.82);
+      const m=getMeta();if(m[key]&&m[key].wide){m[key].wide.img=data;svMeta(m);renderSvc();toast('Kart görseli yüklendi! ✓');}
+    };
+    img.src=e.target.result;
+  };r.readAsDataURL(f);
+}
+function removeWideImg(key){const m=getMeta();if(m[key]&&m[key].wide){m[key].wide.img='';svMeta(m);renderSvc();toast('Görsel kaldırıldı');}}
 function updMetaQuote(key,field,val){const m=getMeta();if(m[key]&&m[key].quote)m[key].quote[field]=val;svMeta(m);}
 function addMetaBenefit(key){const m=getMeta();if(!m[key])return;if(!m[key].benefits)m[key].benefits=[];m[key].benefits.push({icon:'✨',t:'Yeni Fayda',d:'Açıklama yazın...'});svMeta(m);renderSvc();toast('Fayda eklendi!');}
 
