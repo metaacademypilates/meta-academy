@@ -1348,6 +1348,11 @@ function renderSvc(){
             <textarea class="ta" style="min-height:36px;font-size:.75rem" oninput="updMetaWide('${s.key}','d',this.value)">${m.wide.d}</textarea>
           </div>
         </div>
+        <div style="font-size:.72rem;font-weight:600;color:var(--muted-fg);margin-bottom:.35rem">Kart Görseli</div>
+        <div style="padding:.5rem;background:var(--muted);border-radius:.5rem;margin-bottom:.75rem;display:flex;gap:.5rem;align-items:center">
+          <input class="inp" style="flex:1;font-size:.72rem" placeholder="Görsel URL yapıştırın..." value="${m.wide.img||''}" oninput="updMetaWide('${s.key}','img',this.value)"/>
+          ${m.wide.img ? `<img src="${m.wide.img}" style="width:48px;height:36px;object-fit:cover;border-radius:4px"/>` : ''}
+        </div>
         <div style="font-size:.72rem;font-weight:600;color:var(--muted-fg);margin-bottom:.35rem">Müşteri Yorumu</div>
         <div style="padding:.5rem;background:var(--muted);border-radius:.5rem;margin-bottom:.5rem">
           <textarea class="ta" style="min-height:36px;font-size:.78rem;font-style:italic" oninput="updMetaQuote('${s.key}','text',this.value)">${m.quote.text}</textarea>
