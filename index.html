@@ -1112,6 +1112,8 @@ function goTo(id){
 }
 
 init();
+window.addEventListener('storage',function(e){if(e.key&&e.key.startsWith('ma_')){try{init();}catch(ex){}}});
+document.addEventListener('visibilitychange',function(){if(!document.hidden){try{init();}catch(e){}}});
 
 const ham=document.getElementById('hamburger'),navM=document.getElementById('navM');
 ham.addEventListener('click',function(){ham.classList.toggle('open');navM.classList.toggle('open');});
