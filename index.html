@@ -953,7 +953,7 @@ function renderSvc(){
   var html='';
   mains.forEach(function(s,i){
     var m=meta[s.key];if(!m)return;
-    var num=('0'+(i+1)).slice(-2);
+    var num=(i+1);
     html+='<div class="svc-program svc-reveal" id="svc-'+s.key+'">'
       +'<div class="svc-prog-hdr">'
         +'<div class="svc-prog-num">'+num+'</div>'
@@ -980,15 +980,51 @@ function renderSvc(){
       +'<div><p>'+m.quote.text+'</p><cite>— '+m.quote.cite+'</cite></div></div>';
     html+='</div>';
   });
-  // Extras in simple grid
-  if(extras.length){
+  // Extras — detaylı veya basit
+  extras.forEach(function(s,ei){
+    var em=meta[s.key];
+    if(em&&em.benefits&&em.benefits.length>0){
+      // Detaylı extra hizmet (ana hizmetler gibi)
+      var exNum=(mains.length+ei+1);
+      html+='<div class="svc-program svc-reveal" id="svc-'+s.key+'">'
+        +'<div class="svc-prog-hdr">'
+          +'<div class="svc-prog-num">'+exNum+'</div>'
+          +'<div class="svc-prog-title"><h3>'+s.title.toUpperCase()+'</h3><div class="sub">'+(em.sub||'')+'</div></div>'
+          +(em.badge?'<div class="svc-prog-badge">'+em.badge+'</div>':'')
+        +'</div>'
+        +'<div class="svc-grid">';
+      em.benefits.forEach(function(b,bi){
+        html+='<div class="svc-card svc-reveal" style="transition-delay:'+(bi*100)+'ms">'
+          +'<div class="svc-icon">'+b.icon+'</div>'
+          +'<h4>'+b.t+'</h4><p>'+b.d+'</p></div>';
+      });
+      if(em.wide){
+        var hasWImg=em.wide.img&&em.wide.img.length>10;
+        html+='<div class="svc-card svc-card-wide svc-reveal" style="transition-delay:300ms'+(hasWImg?'':';grid-column:span 2')+'">'
+          +'<div class="svc-stat"><div class="num">'+em.wide.num+'</div><div class="unit">'+em.wide.unit+'</div></div>'
+          +'<div><h4>'+em.wide.t+'</h4><p>'+em.wide.d+'</p></div>'
+          +(hasWImg?'<div class="svc-wide-img"><img src="'+em.wide.img+'" alt="'+em.wide.t+'" loading="lazy"></div>':'')
+          +'</div>';
+      }
+      html+='</div>';
+      if(em.quote){
+        html+='<div class="svc-quote svc-reveal">'
+          +'<div class="svc-quote-mark">"</div>'
+          +'<div><p>'+em.quote.text+'</p><cite>— '+em.quote.cite+'</cite></div></div>';
+      }
+      html+='</div>';
+    }
+  });
+  // Basit extras (detaysız olanlar)
+  var simpleExtras=extras.filter(function(s){var em=meta[s.key];return !em||!em.benefits||em.benefits.length===0;});
+  if(simpleExtras.length){
     html+='<div class="svc-program svc-reveal" id="svc-extras"><div class="svc-prog-hdr">'
-      +'<div class="svc-prog-num">'+('0'+(mains.length+1)).slice(-2)+'</div>'
+      +'<div class="svc-prog-num">'+(mains.length+extras.length-simpleExtras.length+1)+'</div>'
       +'<div class="svc-prog-title"><h3>ÖZEL PROGRAMLAR</h3><div class="sub">Ek Hizmetler & Etkinlikler</div></div>'
       +'<div class="svc-prog-badge">Yeni</div></div>'
       +'<div class="svc-grid">';
     var extraIcons={karma:'🎯',acikkapi:'🚪',workshop:'📚',ozel:'⭐'};
-    extras.forEach(function(s,i){
+    simpleExtras.forEach(function(s,i){
       html+='<div class="svc-card svc-reveal" style="transition-delay:'+(i*100)+'ms">'
         +'<div class="svc-icon">'+(extraIcons[s.key]||'✨')+'</div>'
         +'<h4>'+s.title+'</h4><p>'+s.desc+'</p></div>';
@@ -1175,6 +1211,7 @@ function submitAppt(e){
 
 // ── RANDEVU CHOICE ──
 function openRandevu(){
+  try{if(!sessionStorage.getItem('ma_quiz_done')){openQuiz();return;}}catch(e){}
   window.open('https://wa.me/905306689661?text=Merhaba%2C%20%C3%BCcretsiz%20post%C3%BCr%20analizi%20i%C3%A7in%20bilgi%20almak%20istiyorum.','_blank');
 }
 // randevuModal backdrop close - runs after DOM is ready (script at bottom)
@@ -1468,6 +1505,185 @@ try{
     });
     document.addEventListener('mouseleave',function(){glow.style.opacity='0';glowVisible=false;});
   }
+
+})();
+</script>
+
+<!-- ═══ ONBOARDING QUIZ ═══ -->
+<style>
+#quizOverlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;transition:opacity .4s}
+#quizOverlay.show{opacity:1}
+#quizOverlay.hidden{display:none}
+.quiz-box{background:#fff;border-radius:1.2rem;max-width:480px;width:100%;overflow:hidden;transform:translateY(20px);transition:transform .4s cubic-bezier(.22,1,.36,1);position:relative}
+#quizOverlay.show .quiz-box{transform:translateY(0)}
+.quiz-progress{height:4px;background:var(--cream-dark,#e8e0d4)}
+.quiz-progress-bar{height:100%;background:linear-gradient(90deg,var(--green),hsl(145,55%,35%));transition:width .4s;border-radius:0 2px 2px 0}
+.quiz-header{padding:1.5rem 1.5rem 0;text-align:center}
+.quiz-header h3{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--dark);margin:0 0 .3rem}
+.quiz-header p{font-size:.85rem;color:var(--muted,#6b7280);margin:0}
+.quiz-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--muted,#999);z-index:2}
+.quiz-body{padding:1.5rem}
+.quiz-q{font-size:1.05rem;font-weight:600;color:var(--dark);text-align:center;margin-bottom:1.2rem;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:.6rem}
+.quiz-opt{padding:1rem 1.2rem;border:2px solid #e5e7eb;border-radius:.75rem;cursor:pointer;font-size:.92rem;font-weight:500;color:var(--dark);transition:all .25s;display:flex;align-items:center;gap:.75rem;background:#fff}
+.quiz-opt:hover{border-color:var(--green);background:rgba(28,107,35,.04)}
+.quiz-opt.selected{border-color:var(--green);background:rgba(28,107,35,.08);color:var(--green)}
+.quiz-opt-icon{font-size:1.3rem;flex-shrink:0}
+.quiz-result{text-align:center;padding:2rem 1.5rem}
+.quiz-result-icon{font-size:3rem;margin-bottom:.75rem}
+.quiz-result-badge{display:inline-block;padding:.3rem .8rem;background:var(--green);color:#fff;border-radius:2rem;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem}
+.quiz-result h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--dark);margin:0 0 .4rem}
+.quiz-result p{font-size:.88rem;color:var(--muted,#6b7280);line-height:1.6;margin:0 0 1.2rem}
+.quiz-benefits{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.quiz-ben{padding:.35rem .7rem;background:rgba(28,107,35,.08);color:var(--green);border-radius:2rem;font-size:.75rem;font-weight:600}
+.quiz-cta{display:block;width:100%;padding:1rem;background:linear-gradient(135deg,var(--green),hsl(145,55%,28%));color:#fff;border:none;border-radius:.75rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:transform .2s,box-shadow .2s}
+.quiz-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(28,107,35,.3)}
+.quiz-skip{display:block;margin:.75rem auto 0;background:none;border:none;font-size:.8rem;color:var(--muted,#999);cursor:pointer}
+@media(max-width:500px){.quiz-box{border-radius:.75rem;margin:.5rem}.quiz-header h3{font-size:1.3rem}.quiz-result h3{font-size:1.5rem}}
+</style>
+
+<div class="hidden" id="quizOverlay">
+  <div class="quiz-box">
+    <button class="quiz-close" onclick="closeQuiz()">&times;</button>
+    <div class="quiz-progress"><div class="quiz-progress-bar" id="quizBar" style="width:0%"></div></div>
+    <div id="quizContent"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+// Load quiz data from localStorage (admin-managed) or use defaults
+var _qzStore=null;
+try{var _raw=localStorage.getItem('ma_quiz');if(_raw)_qzStore=JSON.parse(_raw);}catch(e){}
+var _defQ=[
+  {q:'Sizi buraya getiren nedir?',opts:[
+    {icon:'🎯',text:'Kilo vermek & sıkılaşmak',tags:['ems','pilates']},
+    {icon:'💪',text:'Güçlenmek & performans artırmak',tags:['atletik']},
+    {icon:'🧘',text:'Ağrılardan kurtulmak & rahatlamak',tags:['postur','pilates']},
+    {icon:'⚡',text:'Kısa sürede etkili sonuç almak',tags:['ems']}
+  ]},
+  {q:'Günde ortalama kaç saat oturuyorsunuz?',opts:[
+    {icon:'🖥️',text:'8 saatten fazla (masa başı)',tags:['postur']},
+    {icon:'🪑',text:'4-8 saat',tags:['postur','pilates']},
+    {icon:'🚶',text:'4 saatten az, hareketliyim',tags:['atletik','ems']}
+  ]},
+  {q:'Daha önce düzenli spor yaptınız mı?',opts:[
+    {icon:'🌱',text:'Hayır, yeni başlayacağım',tags:['pilates','ems']},
+    {icon:'🔄',text:'Başladım ama bıraktım',tags:['pilates','ems']},
+    {icon:'🏋️',text:'Evet, düzenli yapıyorum',tags:['atletik']},
+    {icon:'🤕',text:'Sakatlanma nedeniyle bıraktım',tags:['postur','pilates']}
+  ]},
+  {q:'Vücudunuzda en çok nerede rahatsızlık hissediyorsunuz?',opts:[
+    {icon:'🔙',text:'Bel ve sırt ağrısı',tags:['postur','pilates']},
+    {icon:'🦴',text:'Boyun ve omuz gerginliği',tags:['postur']},
+    {icon:'⚖️',text:'Genel yorgunluk & enerji düşüklüğü',tags:['ems','atletik']},
+    {icon:'✨',text:'Belirgin bir şikayetim yok',tags:['atletik','ems','pilates']}
+  ]}
+];
+var _defP={
+  pilates:{name:'Reformer Pilates',icon:'🧘',badge:'Melisa Eğitmenliğinde',desc:'Core güçlendirme, esneklik ve zihin-beden bağlantısı ile vücudunuzu dönüştürün. 8 hafta içinde gözle görülür fark.',benefits:['Core Güçlendirme','Esneklik','Ağrı Azaltma','Stres Yönetimi']},
+  atletik:{name:'Atletik Performans',icon:'💪',badge:'Engin Eğitmenliğinde',desc:'Branşa özel kuvvet, hız ve çeviklik antrenmanlarıyla atletik kapasitenizi zirveye taşıyın.',benefits:['Fonksiyonel Güç','Performans Artışı','Yaralanma Önleme','Hız & Çeviklik']},
+  postur:{name:'Postür Düzeltme',icon:'🦴',badge:'Uzman Eğitmen Eşliğinde',desc:'Kişiye özel postür analizi ve düzeltici egzersizlerle ağrılarınıza 10 seansta belirgin iyileşme.',benefits:['Postür Analizi','Ağrı Yönetimi','Omurga Sağlığı','Masa Başı Çözüm']},
+  ems:{name:'EMS Antrenmanı',icon:'⚡',badge:'Haftada 1 Seans Yeterli',desc:'20 dakikalık EMS seansı ile %98 kas aktivasyonu. Zamanı kısıtlı olanlar için mükemmel sonuçlar.',benefits:['20 dk Seans','%98 Kas Aktivasyonu','Yağ Yakımı','Selülit Azaltma']}
+};
+
+var quizEnabled=_qzStore?_qzStore.enabled!==false:true;
+var quizDelay=(_qzStore&&_qzStore.delay)||12;
+var quizData=(_qzStore&&Array.isArray(_qzStore.questions)&&_qzStore.questions.length)?_qzStore.questions:_defQ;
+var programs=(_qzStore&&_qzStore.programs&&Object.keys(_qzStore.programs).length)?_qzStore.programs:_defP;
+
+var step=0,answers=[];
+
+window.openQuiz=function(){
+  if(!quizEnabled)return;
+  step=0;answers=[];
+  var ov=document.getElementById('quizOverlay');
+  ov.classList.remove('hidden');
+  setTimeout(function(){ov.classList.add('show');},20);
+  renderQuizStep();
+};
+
+window.closeQuiz=function(){
+  var ov=document.getElementById('quizOverlay');
+  ov.classList.remove('show');
+  setTimeout(function(){ov.classList.add('hidden');},400);
+  try{sessionStorage.setItem('ma_quiz_done','1');}catch(e){}
+};
+
+function renderQuizStep(){
+  var total=quizData.length;
+  document.getElementById('quizBar').style.width=((step/total)*100)+'%';
+  var d=quizData[step];
+  var html='<div class="quiz-header"><h3>Size Özel Program</h3><p>Soru '+(step+1)+'/'+total+'</p></div>';
+  html+='<div class="quiz-body"><div class="quiz-q">'+d.q+'</div><div class="quiz-opts">';
+  d.opts.forEach(function(o,i){
+    html+='<div class="quiz-opt" onclick="pickQuiz('+step+','+i+')">'
+      +'<span class="quiz-opt-icon">'+o.icon+'</span>'
+      +'<span>'+o.text+'</span></div>';
+  });
+  html+='</div></div>';
+  document.getElementById('quizContent').innerHTML=html;
+}
+
+window.pickQuiz=function(s,i){
+  var opts=document.querySelectorAll('.quiz-opt');
+  opts[i].classList.add('selected');
+  answers.push(quizData[s].opts[i].tags);
+  setTimeout(function(){
+    step++;
+    if(step<quizData.length){renderQuizStep();}
+    else{showQuizResult();}
+  },350);
+};
+
+function showQuizResult(){
+  document.getElementById('quizBar').style.width='100%';
+  var scores={};
+  var pkeys=Object.keys(programs);
+  pkeys.forEach(function(k){scores[k]=0;});
+  answers.forEach(function(tags){tags.forEach(function(t){if(scores[t]!==undefined)scores[t]++;});});
+  var best=pkeys[0]||'pilates',max=0;
+  for(var k in scores){if(scores[k]>max){max=scores[k];best=k;}}
+  var p=programs[best];
+  if(!p){p={name:'Program',icon:'🎯',badge:'',desc:'Size özel program önerildi.',benefits:[]};}
+
+  var html='<div class="quiz-result">'
+    +'<div class="quiz-result-icon">'+p.icon+'</div>'
+    +'<div class="quiz-result-badge">Size Özel Öneri</div>'
+    +'<h3>'+p.name+'</h3>'
+    +'<p style="font-size:.78rem;color:var(--green);font-weight:600;margin-bottom:.5rem">'+p.badge+'</p>'
+    +'<p>'+p.desc+'</p>'
+    +'<div class="quiz-benefits">';
+  p.benefits.forEach(function(b){html+='<span class="quiz-ben">'+b+'</span>';});
+  html+='</div>'
+    +'<button class="quiz-cta" onclick="quizToAppt(\''+best+'\')">🎯 Ücretsiz Deneme Dersi Al</button>'
+    +'<button class="quiz-skip" onclick="closeQuiz()">Daha sonra değerlendireceğim</button>'
+    +'</div>';
+  document.getElementById('quizContent').innerHTML=html;
+}
+
+window.quizToAppt=function(program){
+  closeQuiz();
+  setTimeout(function(){
+    var fm=document.getElementById('fmState');
+    var ok=document.getElementById('okState');
+    var modal=document.getElementById('apptModal');
+    if(fm)fm.style.display='block';
+    if(ok)ok.style.display='none';
+    if(modal)modal.classList.remove('hidden');
+  },500);
+};
+
+// Auto-show quiz after delay on first visit
+if(quizEnabled){
+  setTimeout(function(){
+    try{
+      if(!sessionStorage.getItem('ma_quiz_done')&&!sessionStorage.getItem('ma_popup_session')){
+        openQuiz();
+      }
+    }catch(e){}
+  },quizDelay*1000);
+}
 
 })();
 </script>
