@@ -1553,6 +1553,15 @@ try{
 .quiz-cta{display:block;width:100%;padding:1rem;background:linear-gradient(135deg,var(--green),hsl(145,55%,28%));color:#fff;border:none;border-radius:.75rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:transform .2s,box-shadow .2s}
 .quiz-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(28,107,35,.3)}
 .quiz-skip{display:block;margin:.75rem auto 0;background:none;border:none;font-size:.8rem;color:var(--muted,#999);cursor:pointer}
+.quiz-programs{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.2rem;text-align:left}
+.quiz-prog-card{display:flex;align-items:center;gap:.7rem;padding:.7rem .9rem;border-radius:.65rem;border:1.5px solid #e5e7eb;background:#fafaf8;transition:border-color .2s}
+.quiz-prog-card:first-child{border-color:var(--green,#1c6b23);background:rgba(28,107,35,.04)}
+.quiz-prog-card-icon{font-size:1.3rem;flex-shrink:0}
+.quiz-prog-card-info{flex:1;min-width:0}
+.quiz-prog-card-name{font-size:.82rem;font-weight:700;color:var(--dark,#111)}
+.quiz-prog-card-badge{font-size:.65rem;color:var(--muted,#6b7280)}
+.quiz-prog-card-score{font-size:.65rem;font-weight:700;color:var(--green,#1c6b23);background:rgba(28,107,35,.1);padding:.15rem .45rem;border-radius:1rem;flex-shrink:0}
+.quiz-subtitle{font-size:.78rem;color:var(--muted,#6b7280);margin:0 0 1rem;line-height:1.5}
 @media(max-width:500px){.quiz-box{border-radius:.75rem;margin:.5rem}.quiz-header h3{font-size:1.3rem}.quiz-result h3{font-size:1.5rem}}
 </style>
 
@@ -1664,21 +1673,33 @@ function showQuizResult(){
   var pkeys=Object.keys(programs);
   pkeys.forEach(function(k){scores[k]=0;});
   answers.forEach(function(tags){tags.forEach(function(t){if(scores[t]!==undefined)scores[t]++;});});
-  var best=pkeys[0]||'pilates',max=0;
-  for(var k in scores){if(scores[k]>max){max=scores[k];best=k;}}
-  var p=programs[best];
-  if(!p){p={name:'Program',icon:'🎯',badge:'',desc:'Size özel program önerildi.',benefits:[]};}
+  // Puana göre sırala, 0 puanlıları çıkar
+  var sorted=pkeys.filter(function(k){return scores[k]>0;}).sort(function(a,b){return scores[b]-scores[a];});
+  if(!sorted.length)sorted=pkeys.slice(0,1);
+  var maxScore=scores[sorted[0]]||1;
 
   var html='<div class="quiz-result">'
-    +'<div class="quiz-result-icon">'+p.icon+'</div>'
-    +'<div class="quiz-result-badge">Size Özel Öneri</div>'
-    +'<h3>'+p.name+'</h3>'
-    +'<p style="font-size:.78rem;color:var(--green);font-weight:600;margin-bottom:.5rem">'+p.badge+'</p>'
-    +'<p>'+p.desc+'</p>'
-    +'<div class="quiz-benefits">';
-  p.benefits.forEach(function(b){html+='<span class="quiz-ben">'+b+'</span>';});
+    +'<div style="font-size:2.2rem;margin-bottom:.5rem">✨</div>'
+    +'<div class="quiz-result-badge">Analiz Tamamlandı</div>'
+    +'<h3>Size Özel Programlar</h3>'
+    +'<p class="quiz-subtitle">Cevaplarınıza göre size en uygun programları belirledik:</p>'
+    +'<div class="quiz-programs">';
+  sorted.forEach(function(k,idx){
+    var p=programs[k];
+    if(!p)return;
+    var pct=Math.round((scores[k]/maxScore)*100);
+    html+='<div class="quiz-prog-card">'
+      +'<div class="quiz-prog-card-icon">'+p.icon+'</div>'
+      +'<div class="quiz-prog-card-info">'
+      +'<div class="quiz-prog-card-name">'+p.name+'</div>'
+      +'<div class="quiz-prog-card-badge">'+p.badge+'</div>'
+      +'</div>'
+      +'<div class="quiz-prog-card-score">%'+pct+' uyum</div>'
+      +'</div>';
+  });
   html+='</div>'
-    +'<button class="quiz-cta" onclick="quizToAppt(\''+best+'\')">🎯 Ücretsiz Deneme Dersi Al</button>'
+    +'<p style="font-size:.78rem;color:var(--muted,#6b7280);margin:0 0 1rem;line-height:1.5">Detaylı postür analizi ve uzman eğitmen yorumu için hemen randevunuzu oluşturun.</p>'
+    +'<button class="quiz-cta" onclick="quizToAppt()">🎯 Ücretsiz Deneme Dersi Al</button>'
     +'<button class="quiz-skip" onclick="closeQuiz()">Daha sonra değerlendireceğim</button>'
     +'</div>';
   document.getElementById('quizContent').innerHTML=html;
