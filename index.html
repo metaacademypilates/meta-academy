@@ -628,10 +628,10 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
   <!-- Editorial intro -->
   <div class="svc-intro svc-reveal">
     <div>
-      <div class="svc-intro-label">Hizmetlerimiz</div>
-      <h2>BİLİMSEL<br>TEMELLER,<br><em>GERÇEK SONUÇLAR</em></h2>
+      <div class="svc-intro-label" id="svcIntroLabel">Hizmetlerimiz</div>
+      <h2 id="svcIntroTitle">BİLİMSEL<br>TEMELLER,<br><em>GERÇEK SONUÇLAR</em></h2>
     </div>
-    <p>Her bireyin vücudu farklıdır. Meta Academy programları; Pilates'in kontrol odaklı yaklaşımını, EMS teknolojisinin derin kas aktivasyonunu ve postür egzersizlerinin yapısal dengesini bir araya getirerek kişiselleştirilmiş, sürdürülebilir dönüşüm sunar.</p>
+    <p id="svcIntroDesc">Her bireyin vücudu farklıdır. Meta Academy programları; Pilates'in kontrol odaklı yaklaşımını, EMS teknolojisinin derin kas aktivasyonunu ve postür egzersizlerinin yapısal dengesini bir araya getirerek kişiselleştirilmiş, sürdürülebilir dönüşüm sunar.</p>
   </div>
   <!-- Dynamic program blocks -->
   <div id="svcWrap"></div>
@@ -1130,7 +1130,21 @@ function renderCustomCards(){
 }
 
 
-function init(){try{renderHero();}catch(e){}
+function renderSvcIntro(){
+  try{
+    var raw=localStorage.getItem('ma_svc_intro');
+    if(!raw)return;
+    var d=JSON.parse(raw);
+    var lbl=document.getElementById('svcIntroLabel');
+    var ttl=document.getElementById('svcIntroTitle');
+    var desc=document.getElementById('svcIntroDesc');
+    if(lbl&&d.label)lbl.textContent=d.label;
+    if(ttl&&d.title)ttl.innerHTML=d.title;
+    if(desc&&d.desc)desc.textContent=d.desc;
+  }catch(e){}
+}
+function init(){try{renderSvcIntro();}catch(e){}
+try{renderHero();}catch(e){}
 try{renderSvc();}catch(e){}
 try{renderGal();}catch(e){}
 try{renderSteps();}catch(e){}
@@ -1595,7 +1609,6 @@ var programs=(_qzStore&&_qzStore.programs&&Object.keys(_qzStore.programs).length
 var step=0,answers=[];
 
 window.openQuiz=function(){
-  if(!quizEnabled)return;
   step=0;answers=[];
   var ov=document.getElementById('quizOverlay');
   ov.classList.remove('hidden');
@@ -1608,6 +1621,15 @@ window.closeQuiz=function(){
   ov.classList.remove('show');
   setTimeout(function(){ov.classList.add('hidden');},400);
   try{sessionStorage.setItem('ma_quiz_done','1');}catch(e){}
+  // Quiz kapandıktan sonra ücretsiz ders popup'ını aç
+  setTimeout(function(){
+    var fm=document.getElementById('fmState');
+    var ok=document.getElementById('okState');
+    var modal=document.getElementById('apptModal');
+    if(fm)fm.style.display='block';
+    if(ok)ok.style.display='none';
+    if(modal)modal.classList.remove('hidden');
+  },600);
 };
 
 function renderQuizStep(){
@@ -1674,16 +1696,8 @@ window.quizToAppt=function(program){
   },500);
 };
 
-// Auto-show quiz after delay on first visit
-if(quizEnabled){
-  setTimeout(function(){
-    try{
-      if(!sessionStorage.getItem('ma_quiz_done')&&!sessionStorage.getItem('ma_popup_session')){
-        openQuiz();
-      }
-    }catch(e){}
-  },quizDelay*1000);
-}
+// Quiz sayfa açılır açılmaz gösterilsin
+openQuiz();
 
 })();
 </script>
