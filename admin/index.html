@@ -729,6 +729,24 @@ img{max-width:100%;display:block}
             <button class="col-btn" id="svc_col4" onclick="setSvcCols(4)">4</button>
           </div>
         </div>
+        <!-- Hizmetler Intro Düzenleme -->
+        <div class="card mb" style="padding:1rem">
+          <div style="font-size:.8rem;font-weight:700;margin-bottom:.6rem;color:var(--primary)">Hizmetler Başlık Alanı</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem">
+            <div>
+              <label style="font-size:.65rem;font-weight:600;color:var(--muted-fg)">Üst Etiket</label>
+              <input class="inp" id="svcIntroLabel" value="Hizmetlerimiz" oninput="saveSvcIntro()" style="font-size:.8rem"/>
+            </div>
+            <div>
+              <label style="font-size:.65rem;font-weight:600;color:var(--muted-fg)">Başlık (HTML destekli: &lt;br&gt; &lt;em&gt;)</label>
+              <input class="inp" id="svcIntroTitle" oninput="saveSvcIntro()" style="font-size:.8rem"/>
+            </div>
+          </div>
+          <div>
+            <label style="font-size:.65rem;font-weight:600;color:var(--muted-fg)">Açıklama</label>
+            <textarea class="inp" id="svcIntroDesc" oninput="saveSvcIntro()" style="font-size:.8rem;min-height:60px"></textarea>
+          </div>
+        </div>
         <div class="card mb" style="display:flex;gap:.65rem;align-items:center">
           <input class="inp" id="newSvc" placeholder="Yeni hizmet adı..." style="flex:1"/>
           <button class="btn btn-primary btn-sm" onclick="addSvc()">+ Ekle</button>
@@ -1334,12 +1352,33 @@ function saveHero(){
   toast('Hero bölümü kaydedildi!');
 }
 
+// ═══ SVC INTRO ═══
+function loadSvcIntro(){
+  var raw=localStorage.getItem('ma_svc_intro');
+  var d=raw?JSON.parse(raw):{label:'Hizmetlerimiz',title:'BİLİMSEL<br>TEMELLER,<br><em>GERÇEK SONUÇLAR</em>',desc:'Her bireyin vücudu farklıdır. Meta Academy programları; Pilates\'in kontrol odaklı yaklaşımını, EMS teknolojisinin derin kas aktivasyonunu ve postür egzersizlerinin yapısal dengesini bir araya getirerek kişiselleştirilmiş, sürdürülebilir dönüşüm sunar.'};
+  var el1=document.getElementById('svcIntroLabel');
+  var el2=document.getElementById('svcIntroTitle');
+  var el3=document.getElementById('svcIntroDesc');
+  if(el1)el1.value=d.label||'';
+  if(el2)el2.value=d.title||'';
+  if(el3)el3.value=d.desc||'';
+}
+function saveSvcIntro(){
+  var d={
+    label:(document.getElementById('svcIntroLabel')||{}).value||'',
+    title:(document.getElementById('svcIntroTitle')||{}).value||'',
+    desc:(document.getElementById('svcIntroDesc')||{}).value||''
+  };
+  localStorage.setItem('ma_svc_intro',JSON.stringify(d));
+}
+
 // ═══ SERVICES ═══
 var mainSvcKeys=['pilates','atletik','postur','ems'];
 function getMeta(){return get('svc_meta')||DEF.svc_meta;}
 function svMeta(d){sv('svc_meta',d);}
 
 function renderSvc(){
+  loadSvcIntro();
   const list=get('svc'),st=getSt(),meta=getMeta();
   document.getElementById('svcGrid').innerHTML=list.map(s=>{
     const sk=s.key+'_title',on=(st[sk]??1)===1;
@@ -2367,7 +2406,7 @@ function saveAll(){
   // Site versiyon etiketiyle uyumlu tut
   localStorage.setItem('ma_version', '2.1');
   const frame = document.getElementById('previewFrame');
-  if(frame) frame.src = 'meta-academy.html?t=' + Date.now();
+  if(frame) frame.src = '../index.html?t=' + Date.now();
   toast('✓ Tüm değişiklikler kaydedildi!', 's');
 }
 
