@@ -411,6 +411,10 @@ img{max-width:100%;display:block}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           Sayfa Sıralama
         </button>
+        <button class="nav-item" onclick="sw('quiz',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          Quiz / Onboarding
+        </button>
         <button class="nav-item" onclick="sw('style',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M5.34 18.66l-1.41 1.41M22 12h-2M4 12H2M19.07 19.07l-1.41-1.41M5.34 5.34L3.93 3.93M12 22v-2M12 4V2"/></svg>
           Stil & Tasarım
@@ -958,6 +962,26 @@ img{max-width:100%;display:block}
       </div>
     </div>
 
+    <!-- ── QUIZ / ONBOARDING ── -->
+    <div class="panel" id="p-quiz">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+        <div style="font-size:1rem;font-weight:700">Quiz Ayarları</div>
+        <div style="display:flex;gap:.5rem;align-items:center">
+          <label style="font-size:.75rem;font-weight:600;color:var(--muted-fg)">Quiz Aktif</label>
+          <button id="quizToggle" class="stog on" onclick="toggleQuizEnabled()" style="font-size:.8rem">👁</button>
+          <label style="font-size:.75rem;font-weight:600;color:var(--muted-fg);margin-left:.5rem">Gecikme (sn)</label>
+          <input type="number" id="quizDelay" class="inp" value="12" min="3" max="60" style="width:60px;font-size:.8rem" oninput="saveQuizSettings()"/>
+        </div>
+      </div>
+      <div id="quizQuestionsContainer"></div>
+      <button class="btn btn-outline" style="margin-top:.75rem" onclick="addQuizQuestion()">+ Yeni Soru Ekle</button>
+      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)">
+        <div style="font-size:.85rem;font-weight:700;margin-bottom:.75rem">Program Sonuç Kartları</div>
+        <p style="font-size:.75rem;color:var(--muted-fg);margin-bottom:.75rem">Her cevaba atadığınız etiketlere göre en çok puan alan program önerilir.</p>
+        <div id="quizProgramsContainer"></div>
+      </div>
+    </div>
+
     <!-- ── ÖNİZLEME ── -->
     <div class="panel" id="p-preview">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
@@ -998,6 +1022,7 @@ const PAGE_HEADERS = {
   gal:  {title:'Galeri', sub:'Görsel galerisini düzenleyin'},
   con:  {title:'İletişim & Harita', sub:'İletişim bilgileri ve harita ayarları'},
   order:{title:'Sayfa Sıralaması', sub:'Bölümleri sürükleyerek sıralayın'},
+  quiz:{title:'Quiz / Onboarding', sub:'Ziyaretçilere soru sorup doğru hizmete yönlendirin'},
   style:{title:'Stil & Tasarım', sub:'Site renklerini ve fontları özelleştirin'},
   preview:{title:'Site Önizleme', sub:'Değişiklikleri canlı görün'},
 };
@@ -1030,7 +1055,7 @@ function sw(name, btn){
     setTimeout(() => {
       const frame = document.getElementById('previewFrame');
       if(frame){
-        frame.src = 'meta-academy.html?t=' + Date.now();
+        frame.src = '../index.html?t=' + Date.now();
       }
     }, 150);
   }
@@ -1318,8 +1343,9 @@ function renderSvc(){
   document.getElementById('svcGrid').innerHTML=list.map(s=>{
     const sk=s.key+'_title',on=(st[sk]??1)===1;
     const isMain=mainSvcKeys.indexOf(s.key)!==-1;
-    const m=isMain?meta[s.key]:null;
-    // Benefit detay bölümü (sadece ana hizmetler)
+    const m=isMain?meta[s.key]:(meta[s.key]||null);
+    const hasMeta=!!m;
+    // Benefit detay bölümü
     let detailHtml='';
     if(m){
       detailHtml=`<div class="svc-detail" id="det_${s.key}" style="display:none;border-top:1px solid var(--border);padding-top:.75rem;margin-top:.75rem">
@@ -1329,12 +1355,13 @@ function renderSvc(){
           <div><label style="font-size:.7rem;color:var(--muted-fg)">Rozet</label><input class="inp" style="font-size:.78rem" value="${m.badge}" oninput="updMeta('${s.key}','badge',this.value)"/></div>
         </div>
         <div style="font-size:.72rem;font-weight:600;color:var(--muted-fg);margin-bottom:.35rem">Fayda Kartları</div>
-        ${(m.benefits||[]).map((b,bi)=>`<div style="display:grid;grid-template-columns:40px 1fr;gap:.4rem;margin-bottom:.5rem;padding:.5rem;background:var(--muted);border-radius:.5rem">
+        ${(m.benefits||[]).map((b,bi)=>`<div style="display:grid;grid-template-columns:40px 1fr 24px;gap:.4rem;margin-bottom:.5rem;padding:.5rem;background:var(--muted);border-radius:.5rem">
           <input class="inp" style="font-size:1.1rem;text-align:center;padding:.2rem" value="${b.icon}" oninput="updMetaBenefit('${s.key}',${bi},'icon',this.value)"/>
           <div>
             <input class="inp" style="font-size:.78rem;font-weight:600;margin-bottom:.25rem" value="${b.t}" oninput="updMetaBenefit('${s.key}',${bi},'t',this.value)"/>
             <textarea class="ta" style="min-height:36px;font-size:.75rem" oninput="updMetaBenefit('${s.key}',${bi},'d',this.value)">${b.d}</textarea>
           </div>
+          <button onclick="removeMetaBenefit('${s.key}',${bi})" style="background:none;border:none;cursor:pointer;font-size:.8rem;color:var(--danger,#e74c3c);align-self:start;margin-top:.2rem" title="Faydayı sil">✕</button>
         </div>`).join('')}
         <button class="btn btn-outline btn-sm" style="margin-bottom:.75rem" onclick="addMetaBenefit('${s.key}')">+ Fayda Ekle</button>
         <div style="font-size:.72rem;font-weight:600;color:var(--muted-fg);margin-bottom:.35rem">İstatistik Kartı</div>
@@ -1372,7 +1399,7 @@ function renderSvc(){
             <span class="svc-label">${s.title}</span>
           </div>
           <div class="svc-acts">
-            ${isMain?`<button class="btn btn-outline btn-sm" onclick="toggleSvcDetail('${s.key}')" title="Detay düzenle" style="font-size:.7rem">⚙ Detay</button>`:''}
+            ${hasMeta?`<button class="btn btn-outline btn-sm" onclick="toggleSvcDetail('${s.key}')" title="Detay düzenle" style="font-size:.7rem">⚙ Detay</button>`:`<button class="btn btn-outline btn-sm" onclick="initSvcMeta('${s.key}')" title="Detay ekle" style="font-size:.7rem">+ Detay Ekle</button>`}
             <button class="btn btn-danger btn-sm btn-icon" onclick="removeSvc('${s.key}')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
             </button>
@@ -1437,6 +1464,8 @@ function handleWideImg(ev,key){
 function removeWideImg(key){const m=getMeta();if(m[key]&&m[key].wide){m[key].wide.img='';svMeta(m);renderSvc();toast('Görsel kaldırıldı');}}
 function updMetaQuote(key,field,val){const m=getMeta();if(m[key]&&m[key].quote)m[key].quote[field]=val;svMeta(m);}
 function addMetaBenefit(key){const m=getMeta();if(!m[key])return;if(!m[key].benefits)m[key].benefits=[];m[key].benefits.push({icon:'✨',t:'Yeni Fayda',d:'Açıklama yazın...'});svMeta(m);renderSvc();toast('Fayda eklendi!');}
+function removeMetaBenefit(key,idx){const m=getMeta();if(!m[key]||!m[key].benefits)return;if(!confirm('Bu faydayı silmek istiyor musunuz?'))return;m[key].benefits.splice(idx,1);svMeta(m);renderSvc();toast('Fayda silindi!');}
+function initSvcMeta(key){const m=getMeta();if(m[key])return;m[key]={sub:'',badge:'',benefits:[{icon:'✨',t:'Fayda Başlığı',d:'Açıklama yazın...'}],wide:{num:'',unit:'',t:'',d:'',img:''},quote:{text:'',cite:''}};svMeta(m);renderSvc();toast('Detay bölümü oluşturuldu! ⚙ Detay butonuna tıklayın.');}
 
 // ═══ HOW IT WORKS ═══
 function renderHiw(){
@@ -2485,8 +2514,173 @@ function loadOrder(){
 // Load order when panel opened
 (function(){
   const orig=window.sw;
-  window.sw=function(name,btn){orig(name,btn);if(name==='order')loadOrder();};
+  window.sw=function(name,btn){orig(name,btn);if(name==='order')loadOrder();if(name==='quiz'&&typeof renderQuiz==='function')renderQuiz();};
 })();
+
+// ═══ QUIZ ADMIN ═══
+const QUIZ_KEY='ma_quiz';
+function getQuiz(){
+  try{var d=localStorage.getItem(QUIZ_KEY);return d?JSON.parse(d):null;}catch(e){return null;}
+}
+function svQuiz(d){localStorage.setItem(QUIZ_KEY,JSON.stringify(d));}
+function defQuiz(){
+  return {
+    enabled:true,delay:12,
+    questions:[
+      {q:'Sizi buraya getiren nedir?',opts:[
+        {icon:'🎯',text:'Kilo vermek & sıkılaşmak',tags:['ems','pilates']},
+        {icon:'💪',text:'Güçlenmek & performans artırmak',tags:['atletik']},
+        {icon:'🧘',text:'Ağrılardan kurtulmak & rahatlamak',tags:['postur','pilates']},
+        {icon:'⚡',text:'Kısa sürede etkili sonuç almak',tags:['ems']}
+      ]},
+      {q:'Günde ortalama kaç saat oturuyorsunuz?',opts:[
+        {icon:'🖥️',text:'8 saatten fazla (masa başı)',tags:['postur']},
+        {icon:'🪑',text:'4-8 saat',tags:['postur','pilates']},
+        {icon:'🚶',text:'4 saatten az, hareketliyim',tags:['atletik','ems']}
+      ]},
+      {q:'Daha önce düzenli spor yaptınız mı?',opts:[
+        {icon:'🌱',text:'Hayır, yeni başlayacağım',tags:['pilates','ems']},
+        {icon:'🔄',text:'Başladım ama bıraktım',tags:['pilates','ems']},
+        {icon:'🏋️',text:'Evet, düzenli yapıyorum',tags:['atletik']},
+        {icon:'🤕',text:'Sakatlanma nedeniyle bıraktım',tags:['postur','pilates']}
+      ]},
+      {q:'Vücudunuzda en çok nerede rahatsızlık hissediyorsunuz?',opts:[
+        {icon:'🔙',text:'Bel ve sırt ağrısı',tags:['postur','pilates']},
+        {icon:'🦴',text:'Boyun ve omuz gerginliği',tags:['postur']},
+        {icon:'⚖️',text:'Genel yorgunluk & enerji düşüklüğü',tags:['ems','atletik']},
+        {icon:'✨',text:'Belirgin bir şikayetim yok',tags:['atletik','ems','pilates']}
+      ]}
+    ],
+    programs:{
+      pilates:{name:'Reformer Pilates',icon:'🧘',badge:'Melisa Eğitmenliğinde',desc:'Core güçlendirme, esneklik ve zihin-beden bağlantısı ile vücudunuzu dönüştürün.',benefits:['Core Güçlendirme','Esneklik','Ağrı Azaltma','Stres Yönetimi']},
+      atletik:{name:'Atletik Performans',icon:'💪',badge:'Engin Eğitmenliğinde',desc:'Branşa özel kuvvet, hız ve çeviklik antrenmanlarıyla atletik kapasitenizi zirveye taşıyın.',benefits:['Fonksiyonel Güç','Performans Artışı','Yaralanma Önleme','Hız & Çeviklik']},
+      postur:{name:'Postür Düzeltme',icon:'🦴',badge:'Uzman Eğitmen Eşliğinde',desc:'Kişiye özel postür analizi ve düzeltici egzersizlerle ağrılarınıza 10 seansta belirgin iyileşme.',benefits:['Postür Analizi','Ağrı Yönetimi','Omurga Sağlığı','Masa Başı Çözüm']},
+      ems:{name:'EMS Antrenmanı',icon:'⚡',badge:'Haftada 1 Seans Yeterli',desc:'20 dakikalık EMS seansı ile %98 kas aktivasyonu. Zamanı kısıtlı olanlar için mükemmel sonuçlar.',benefits:['20 dk Seans','%98 Kas Aktivasyonu','Yağ Yakımı','Selülit Azaltma']}
+    }
+  };
+}
+function loadQuiz(){return getQuiz()||defQuiz();}
+
+function renderQuiz(){
+  var qz=loadQuiz();
+  // Toggle & delay
+  var tog=document.getElementById('quizToggle');
+  if(tog){tog.className='stog '+(qz.enabled?'on':'');tog.textContent=qz.enabled?'👁':'🚫';}
+  var del=document.getElementById('quizDelay');
+  if(del)del.value=qz.delay||12;
+
+  // Questions
+  var c=document.getElementById('quizQuestionsContainer');
+  if(!c)return;
+  var html='';
+  qz.questions.forEach(function(q,qi){
+    html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1rem;margin-bottom:.75rem">'
+      +'<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem">'
+      +'<span style="font-size:.7rem;font-weight:700;color:var(--primary);background:var(--primary-light);padding:.15rem .5rem;border-radius:.3rem">Soru '+(qi+1)+'</span>'
+      +'<input class="inp" value="'+esc(q.q)+'" oninput="updQuizQ('+qi+',this.value)" style="flex:1;font-size:.82rem;font-weight:600" placeholder="Soru metni"/>'
+      +'<button onclick="removeQuizQ('+qi+')" style="color:var(--destructive);font-size:1rem;padding:.2rem" title="Soru Sil">✕</button>'
+      +'</div>';
+    // Options
+    q.opts.forEach(function(o,oi){
+      html+='<div style="display:grid;grid-template-columns:36px 1fr 1fr 24px;gap:.4rem;align-items:center;margin-bottom:.4rem;padding:.4rem .5rem;background:var(--bg);border-radius:.4rem">'
+        +'<input class="inp" value="'+esc(o.icon)+'" oninput="updQuizOpt('+qi+','+oi+',\'icon\',this.value)" style="font-size:.85rem;text-align:center;padding:.2rem" title="Emoji"/>'
+        +'<input class="inp" value="'+esc(o.text)+'" oninput="updQuizOpt('+qi+','+oi+',\'text\',this.value)" style="font-size:.78rem" placeholder="Seçenek metni"/>'
+        +'<input class="inp" value="'+esc(o.tags.join(','))+'" oninput="updQuizOpt('+qi+','+oi+',\'tags\',this.value)" style="font-size:.72rem;color:var(--primary)" placeholder="etiketler: pilates,ems" title="Virgülle ayır: pilates,ems,postur,atletik"/>'
+        +'<button onclick="removeQuizOpt('+qi+','+oi+')" style="color:var(--destructive);font-size:.85rem;padding:.1rem" title="Seçenek Sil">✕</button>'
+        +'</div>';
+    });
+    html+='<button class="btn btn-outline" style="font-size:.72rem;padding:.3rem .7rem;margin-top:.3rem" onclick="addQuizOpt('+qi+')">+ Seçenek</button>'
+      +'</div>';
+  });
+  c.innerHTML=html;
+
+  // Programs
+  var pc=document.getElementById('quizProgramsContainer');
+  if(!pc)return;
+  var ph='';
+  var pkeys=Object.keys(qz.programs);
+  pkeys.forEach(function(pk){
+    var p=qz.programs[pk];
+    ph+='<div style="background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1rem;margin-bottom:.75rem">'
+      +'<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem">'
+      +'<span style="font-size:1.2rem">'+esc(p.icon)+'</span>'
+      +'<span style="font-size:.75rem;font-weight:700;color:var(--primary);background:var(--primary-light);padding:.15rem .5rem;border-radius:.3rem">'+esc(pk)+'</span>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.5rem">'
+      +'<div><label style="font-size:.65rem;font-weight:600;color:var(--muted-fg)">Ad</label><input class="inp" value="'+esc(p.name)+'" oninput="updQuizProg(\''+pk+'\',\'name\',this.value)" style="font-size:.78rem"/></div>'
+      +'<div><label style="font-size:.65rem;font-weight:600;color:var(--muted-fg)">Icon</label><input class="inp" value="'+esc(p.icon)+'" oninput="updQuizProg(\''+pk+'\',\'icon\',this.value)" style="font-size:.78rem;width:50px"/></div>'
+      +'</div>'
+      +'<div style="margin-bottom:.4rem"><label style="font-size:.65rem;font-weight:600;color:var(--muted-fg)">Rozet</label><input class="inp" value="'+esc(p.badge)+'" oninput="updQuizProg(\''+pk+'\',\'badge\',this.value)" style="font-size:.78rem"/></div>'
+      +'<div style="margin-bottom:.4rem"><label style="font-size:.65rem;font-weight:600;color:var(--muted-fg)">Açıklama</label><textarea class="inp" oninput="updQuizProg(\''+pk+'\',\'desc\',this.value)" style="font-size:.78rem;min-height:48px">'+esc(p.desc)+'</textarea></div>'
+      +'<div><label style="font-size:.65rem;font-weight:600;color:var(--muted-fg)">Faydalar (virgülle ayır)</label><input class="inp" value="'+esc(p.benefits.join(', '))+'" oninput="updQuizProg(\''+pk+'\',\'benefits\',this.value)" style="font-size:.78rem"/></div>'
+      +'</div>';
+  });
+  ph+='<button class="btn btn-outline" style="font-size:.72rem;padding:.3rem .7rem;margin-top:.3rem" onclick="addQuizProgram()">+ Yeni Program</button>';
+  pc.innerHTML=ph;
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function toggleQuizEnabled(){
+  var qz=loadQuiz();
+  qz.enabled=!qz.enabled;
+  svQuiz(qz);
+  renderQuiz();
+  toast(qz.enabled?'Quiz aktif!':'Quiz kapatıldı');
+}
+function saveQuizSettings(){
+  var qz=loadQuiz();
+  var del=document.getElementById('quizDelay');
+  qz.delay=parseInt(del.value)||12;
+  svQuiz(qz);
+}
+
+// Question CRUD
+function addQuizQuestion(){
+  var qz=loadQuiz();
+  qz.questions.push({q:'Yeni soru?',opts:[{icon:'🔹',text:'Seçenek 1',tags:['pilates']},{icon:'🔹',text:'Seçenek 2',tags:['ems']}]});
+  svQuiz(qz);renderQuiz();toast('Soru eklendi');
+}
+function removeQuizQ(qi){
+  if(!confirm('Bu soruyu silmek istiyor musunuz?'))return;
+  var qz=loadQuiz();qz.questions.splice(qi,1);svQuiz(qz);renderQuiz();toast('Soru silindi');
+}
+function updQuizQ(qi,val){
+  var qz=loadQuiz();qz.questions[qi].q=val;svQuiz(qz);
+}
+
+// Option CRUD
+function addQuizOpt(qi){
+  var qz=loadQuiz();qz.questions[qi].opts.push({icon:'🔹',text:'Yeni seçenek',tags:['pilates']});svQuiz(qz);renderQuiz();toast('Seçenek eklendi');
+}
+function removeQuizOpt(qi,oi){
+  if(!confirm('Bu seçeneği silmek istiyor musunuz?'))return;
+  var qz=loadQuiz();qz.questions[qi].opts.splice(oi,1);svQuiz(qz);renderQuiz();toast('Seçenek silindi');
+}
+function updQuizOpt(qi,oi,field,val){
+  var qz=loadQuiz();
+  if(field==='tags'){qz.questions[qi].opts[oi].tags=val.split(',').map(function(t){return t.trim();}).filter(Boolean);}
+  else{qz.questions[qi].opts[oi][field]=val;}
+  svQuiz(qz);
+}
+
+// Program editing
+function updQuizProg(pk,field,val){
+  var qz=loadQuiz();
+  if(field==='benefits'){qz.programs[pk].benefits=val.split(',').map(function(t){return t.trim();}).filter(Boolean);}
+  else{qz.programs[pk][field]=val;}
+  svQuiz(qz);
+}
+function addQuizProgram(){
+  var key=prompt('Program anahtarı (örn: yoga, boxing):');
+  if(!key)return;
+  key=key.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+  if(!key)return;
+  var qz=loadQuiz();
+  if(qz.programs[key]){toast('Bu anahtar zaten var!','e');return;}
+  qz.programs[key]={name:key.charAt(0).toUpperCase()+key.slice(1),icon:'🔹',badge:'',desc:'Program açıklaması',benefits:['Fayda 1','Fayda 2']};
+  svQuiz(qz);renderQuiz();toast('Program eklendi');
+}
 </script>
 </body>
 </html>
