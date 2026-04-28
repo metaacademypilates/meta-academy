@@ -827,7 +827,7 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
 
 <!-- Sol Chat Widget -->
 <div id="chat-float">
-  <button id="chat-btn" onclick="openPopup()">
+  <button id="chat-btn" onclick="openQuiz()">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
     <div class="chat-label"><span>Ücretsiz</span><span>Randevu Al</span></div>
   </button>
@@ -837,7 +837,7 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
 <a id="wa-float" href="https://wa.me/905306689661?text=Merhaba%2C%20%C3%BCcretsiz%20post%C3%BCr%20analizi%20i%C3%A7in%20bilgi%20almak%20istiyorum." target="_blank" rel="noopener" aria-label="WhatsApp'tan Yaz">
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.523 5.847L0 24l6.316-1.498A11.93 11.93 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.003-1.369l-.36-.214-3.727.883.9-3.629-.235-.372A9.818 9.818 0 1112 21.818z"/></svg>
 </a>
-<button id="flt-cta" onclick="window.open('https://wa.me/905306689661?text=Merhaba%2C%20%C3%BCcretsiz%20post%C3%BCr%20analizi%20i%C3%A7in%20bilgi%20almak%20istiyorum.','_blank')">🏃 Ücretsiz Postür Analizi Randevusu Al</button>
+<button id="flt-cta" style="display:none" onclick="return false"></button>
 <button id="rev-btn" onclick="document.getElementById('revModal').classList.remove('hidden')">⭐ Bizi Değerlendirin</button>
 
 <div class="modal-ov hidden" id="apptModal">
@@ -1747,15 +1747,7 @@ window.closeQuiz=function(){
   ov.classList.remove('show');
   setTimeout(function(){ov.classList.add('hidden');},400);
   try{sessionStorage.setItem('ma_quiz_done','1');}catch(e){}
-  // Quiz kapandıktan sonra ücretsiz ders popup'ını aç
-  setTimeout(function(){
-    var fm=document.getElementById('fmState');
-    var ok=document.getElementById('okState');
-    var modal=document.getElementById('apptModal');
-    if(fm)fm.style.display='block';
-    if(ok)ok.style.display='none';
-    if(modal)modal.classList.remove('hidden');
-  },600);
+  // Quiz kapandıktan sonra popup açılmaz
 };
 
 function renderQuizStep(){
