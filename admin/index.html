@@ -332,7 +332,7 @@ img{max-width:100%;display:block}
         <p class="login-subtitle" id="loginSub">Meta Academy admin paneline giriş yapın</p>
         <div class="lf-group">
           <label class="lf-label">E-Posta</label>
-          <input type="email" class="lf-input" id="em" placeholder="admin@metaacademy.com.tr" autocomplete="email"/>
+          <input type="email" class="lf-input" id="em" placeholder="metaacademypilates@gmail.com" autocomplete="email"/>
         </div>
         <div class="lf-group" id="pwf">
           <label class="lf-label">Şifre</label>
@@ -930,6 +930,16 @@ img{max-width:100%;display:block}
     </div>
     <div class="panel" id="p-style">
       <div class="sy">
+        <!-- Şifre Değiştir kartı -->
+        <div class="card" style="margin-bottom:1.25rem">
+          <div class="sec-title">🔑 Admin Şifresi</div>
+          <div class="g3" style="gap:.75rem;margin-bottom:.85rem">
+            <div><label class="lbl">Mevcut Şifre</label><input class="inp" type="password" id="pw_cur" placeholder="Mevcut şifreniz"/></div>
+            <div><label class="lbl">Yeni Şifre</label><input class="inp" type="password" id="pw_new" placeholder="En az 6 karakter"/></div>
+            <div><label class="lbl">Yeni Şifre (Tekrar)</label><input class="inp" type="password" id="pw_new2" placeholder="Yeni şifreyi tekrar girin"/></div>
+          </div>
+          <button class="btn btn-primary" onclick="changePw()">🔒 Şifreyi Güncelle</button>
+        </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
           <div class="card">
             <div class="sec-title">🎨 Renkler</div>
@@ -1266,14 +1276,6 @@ function doAuth(){
   });
 }
 function doLogout(){
-  var token=sessionStorage.getItem('ma_token');
-  if(token){
-    fetch('https://tffotrxrulotvoboeewv.supabase.co/auth/v1/logout',{
-      method:'POST',
-      headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMTE2MjgsImV4cCI6MjA5MTY4NzYyOH0.uWLZgU33MEEN0EyfRDAPZCzjZT6FGEDwazmJqUGSxdI','Authorization':'Bearer '+token}
-    }).catch(function(){});
-  }
-  sessionStorage.removeItem('ma_token');
   sessionStorage.removeItem('ma_auth');
   sessionStorage.removeItem('ma_email');
   document.getElementById('adminPage').classList.remove('active');
@@ -1284,6 +1286,24 @@ function doLogout(){
   if(document.getElementById('forgotBtn'))document.getElementById('forgotBtn').style.display='';
   if(document.getElementById('modeBtn'))document.getElementById('modeBtn').textContent='Hesabınız yok mu? Kayıt olun';
   if(document.getElementById('pwf'))document.getElementById('pwf').style.display='';
+}
+function changePw(){
+  var cur=document.getElementById("pw_cur").value;
+  var nw=document.getElementById("pw_new").value;
+  var nw2=document.getElementById("pw_new2").value;
+  if(!cur||!nw||!nw2){toast("Tüm alanları doldurun.");return;}
+  if(nw!==nw2){toast("Yeni şifreler eşleşmiyor.");return;}
+  if(nw.length<6){toast("Şifre en az 6 karakter olmalı.");return;}
+  _hashPw(cur).then(function(h){
+    if(h!==localStorage.getItem(ADMIN_PW_KEY)){toast("Mevcut şifre hatalı.");return;}
+    _hashPw(nw).then(function(nh){
+      localStorage.setItem(ADMIN_PW_KEY,nh);
+      document.getElementById("pw_cur").value="";
+      document.getElementById("pw_new").value="";
+      document.getElementById("pw_new2").value="";
+      toast("✅ Şifre güncellendi!");
+    });
+  });
 }
 function toggleMode(){
   if(mode==='forgot'){showLogin();return;}
@@ -2474,6 +2494,24 @@ document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')
 
 // ── AUTH: real Supabase auth only (overrides removed) ──
 // Registration via the panel is disabled — new admins must be created in Supabase dashboard.
+function changePw(){
+  var cur=document.getElementById("pw_cur").value;
+  var nw=document.getElementById("pw_new").value;
+  var nw2=document.getElementById("pw_new2").value;
+  if(!cur||!nw||!nw2){toast("Tüm alanları doldurun.");return;}
+  if(nw!==nw2){toast("Yeni şifreler eşleşmiyor.");return;}
+  if(nw.length<6){toast("Şifre en az 6 karakter olmalı.");return;}
+  _hashPw(cur).then(function(h){
+    if(h!==localStorage.getItem(ADMIN_PW_KEY)){toast("Mevcut şifre hatalı.");return;}
+    _hashPw(nw).then(function(nh){
+      localStorage.setItem(ADMIN_PW_KEY,nh);
+      document.getElementById("pw_cur").value="";
+      document.getElementById("pw_new").value="";
+      document.getElementById("pw_new2").value="";
+      toast("✅ Şifre güncellendi!");
+    });
+  });
+}
 function toggleMode(){
   document.getElementById('authErr').classList.remove('show');
   document.getElementById('authErr').classList.add('show');
