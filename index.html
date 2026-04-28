@@ -267,16 +267,16 @@ footer::before{content:'';position:absolute;inset:0;background:radial-gradient(c
 /* Modals */
 .modal-ov{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(0,0,0,.7)}
 .modal-ov.hidden{display:none}
-.modal{background:white;border-radius:1.5rem;width:100%;max-width:480px;overflow:hidden;animation:scaleIn .3s ease forwards;box-shadow:0 32px 80px rgba(0,0,0,.2)}
-.modal-hdr{background:var(--green);padding:2rem;text-align:center;position:relative;overflow:hidden}
+.modal{background:white;border-radius:1.5rem;width:100%;max-width:420px;overflow:hidden;animation:scaleIn .3s ease forwards;box-shadow:0 32px 80px rgba(0,0,0,.2)}
+.modal-hdr{background:var(--green);padding:1.4rem 1.5rem;text-align:center;position:relative;overflow:hidden}
 .modal-hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.1),transparent 50%)}
 .modal-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem 1rem;border-radius:999px;background:rgba(245,240,232,.2);border:1px solid rgba(245,240,232,.3);color:var(--cream);font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem}
-.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:white;line-height:1.2}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:white;line-height:1.2}
 .modal-sub{color:rgba(255,255,255,.8);font-size:.95rem;margin-top:.25rem}
 .modal-close{position:absolute;top:.75rem;right:.75rem;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);font-size:1.1rem;transition:all .2s;cursor:pointer;border:none}
 .modal-close:hover{background:rgba(255,255,255,.2);color:white}
 .modal-diamond{position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);width:24px;height:24px;background:white;rotate:45deg;border-radius:2px}
-.modal-body{padding:2rem}
+.modal-body{padding:1.5rem}
 .modal-benefits{display:flex;justify-content:center;gap:1.5rem;margin-bottom:1.5rem}
 .benefit{display:flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--muted)}
 .benefit .dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
@@ -615,7 +615,6 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
         <div class="drop-menu"><p class="drop-menu-lbl">Branşlarımız</p><div id="dropSvcLinks"></div></div>
       </div>
       <a href="javascript:void(0)" onclick="goTo('online')">Online Dersler</a>
-      <a href="javascript:void(0)" onclick="goTo('online')">Online Dersler</a>
       <a href="javascript:void(0)" onclick="goTo('how-it-works')">Nasıl Çalışıyoruz</a>
       <a href="javascript:void(0)" onclick="goTo('contact')">İletişim</a>
     </nav>
@@ -630,7 +629,6 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
     <a href="javascript:void(0)" onclick="closeMenu();goTo('hero')">Ana Sayfa</a>
     <a href="javascript:void(0)" onclick="closeMenu();goTo('services')">Hizmetler</a>
     <div class="sub-lnks" id="mobSvcLinks"></div>
-    <a href="javascript:void(0)" onclick="closeMenu();goTo('online')">Online Dersler</a>
     <a href="javascript:void(0)" onclick="closeMenu();goTo('online')">Online Dersler</a>
     <a href="javascript:void(0)" onclick="closeMenu();goTo('how-it-works')">Nasıl Çalışıyoruz</a>
     <a href="javascript:void(0)" onclick="closeMenu();goTo('contact')">İletişim</a>
@@ -801,9 +799,7 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
           <a href="#" class="social-link">▶</a>
         </div>
       </div>
-      <div class="ft-col"><h4>Hızlı Linkler</h4><ul class="ft-links"><li><a href="javascript:void(0)" onclick="goTo('hero')">Ana Sayfa</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">Hizmetler</a></li><li><a href="javascript:void(0)" onclick="goTo('online')">Online Dersler</a>
-      <a href="javascript:void(0)" onclick="goTo('online')">Online Dersler</a>
-      <a href="javascript:void(0)" onclick="goTo('how-it-works')">Nasıl Çalışıyoruz</a></li><li><a href="javascript:void(0)" onclick="goTo('contact')">İletişim</a></li></ul></div>
+      <div class="ft-col"><h4>Hızlı Linkler</h4><ul class="ft-links"><li><a href="javascript:void(0)" onclick="goTo('hero')">Ana Sayfa</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">Hizmetler</a></li><li><a href="javascript:void(0)" onclick="goTo('online')">Online Dersler</a></li><li><a href="javascript:void(0)" onclick="goTo('how-it-works')">Nasıl Çalışıyoruz</a></li><li><a href="javascript:void(0)" onclick="goTo('contact')">İletişim</a></li></ul></div>
       <div class="ft-col"><h4>Hizmetlerimiz</h4><ul class="ft-links"><li><a href="javascript:void(0)" onclick="goTo('services')">Pilates</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">Atletik Performans</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">Postürel Egzersizler</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">EMS</a></li></ul></div>
       <div class="ft-col" id="footerContact"></div>
     </div>
@@ -919,7 +915,8 @@ const DEF={
     {key:'karma',title:'Karma Programlar',desc:'Kişiselleştirilmiş karma antrenman planlarıyla hedeflerinize özel yol haritası.',img:'https://lh3.googleusercontent.com/p/AF1QipNhcy5Zleka8z2eGhk76kQlsZGFj15p0IgpMk2k=w800-h600-k-no'},
     {key:'acikkapi',title:'Açık Kapı Günleri',desc:'Stüdyomuzu tanımak ve ücretsiz deneme dersi almak için katılın.',img:'https://lh3.googleusercontent.com/p/AF1QipPwXHZboL6LVEcrnxXirzBlL2_mu6me02seRa_a=w800-h600-k-no'},
     {key:'workshop',title:'Workshop & Seminerler',desc:'Uzman eğitmenlerimizle postür, beslenme ve performans konularında seminerler.',img:'https://lh3.googleusercontent.com/p/AF1QipMzz3RptKbd6PufQrrcCtOJUIdGr5T4q8J6CmrX=w800-h600-k-no'},
-    {key:'ozel',title:'Özel Programlar',desc:'Sezona özel detoks, yaz bedeni ve maraton hazırlık programları.',img:'https://lh3.googleusercontent.com/p/AF1QipOZxygZrEOuxqv8wkDv1cD3z1wJkFl1DqMgAxpW=w800-h600-k-no'}
+    {key:'ozel',title:'Özel Programlar',desc:'Sezona özel detoks, yaz bedeni ve maraton hazırlık programları.',img:'https://lh3.googleusercontent.com/p/AF1QipOZxygZrEOuxqv8wkDv1cD3z1wJkFl1DqMgAxpW=w800-h600-k-no'},
+    {key:'online',title:'Online Dersler',desc:'Nerede olursanız olun, canlı ve kayıtlı derslerle pilates ve egzersiz deneyimi.',img:'https://lh3.googleusercontent.com/p/AF1QipNhcy5Zleka8z2eGhk76kQlsZGFj15p0IgpMk2k=w800-h600-k-no'}
   ],
   svc_meta:{
     pilates:{sub:'Reformer · Mat · Klinik Pilates',badge:'Melisa Eğitmenliğinde',
@@ -949,7 +946,14 @@ const DEF={
         {icon:'💪',t:'Kas Sıkılaşma',d:'Derin kas lifleri yüksek yoğunlukta çalıştırılarak kas tonusu artar, bölgesel incelme gözlemlenir.'},
         {icon:'🕐',t:'Zamandan Tasarruf',d:'20 dakikalık EMS seansı, saatler süren klasik antrenmanlarla eşdeğer kas aktivasyonu sağlar.'}
       ],wide:{num:'98%',unit:'Kas Aktivasyon<br>Oranı (Klasik: %30)',t:'Selülit Azaltma & Doğum Sonrası',d:'Bölgesel dolaşımı destekler, cilt altı kas dokusunun sıkılaşmasına katkı sağlar. Doğum sonrası güvenli toparlanma sunar.'},
-      quote:{text:'Haftada bir 20 dakika ile iki ayda beklediğimden çok daha fazla sonuç aldım.',cite:'Ayşe M., Meta Academy Üyesi'}}
+      quote:{text:'Haftada bir 20 dakika ile iki ayda beklediğimden çok daha fazla sonuç aldım.',cite:'Ayşe M., Meta Academy Üyesi'}},
+    online:{sub:'Canlı · Kayıtlı · Esnek',badge:'Zoom & Google Meet',
+      benefits:[
+        {icon:'📹',t:'Canlı Dersler',d:'Birebir veya grup olarak gerçek zamanlı dersler. Eğitmeninizden anında geri bildirim alın.'},
+        {icon:'🎥',t:'Kayıtlı Kütüphane',d:'İstediğiniz zaman erişebileceğiniz ders arşivi. Kendi hızınızda ilerleyin.'},
+        {icon:'🌐',t:'Esnek Program',d:"Size uygun saatlerde ders planlayın. 07:00 – 21:00 arası müsait eğitmenlerimizden seçin."}]
+      ,wide:{num:'7/24',unit:'Kayıt Erişimi',t:'Kişiselleştirilmiş Online Plan',d:'Online olsa da programınız size özel. Haftalık ilerleme takibi, WhatsApp destek hattı ve kişisel egzersiz programı dahil.'},
+      quote:{text:'Online derslerle İstanbul dışındayken bile antrenmanımı aksatmadım.',cite:'Selin K., Meta Academy Üyesi'}}
   },
   steps:[
     {key:'step1',title:'Değerlendirme',desc:'Ön görüşme ve kapsamlı analiz ile mevcut durumunuzu değerlendiriyoruz. Postür analizi, hareket taraması ve hedef belirleme.'},
@@ -985,7 +989,7 @@ const DEF={
 // ── DEF yüklendikten sonra localStorage'ı doldur (versiyon kontrolü) ──
 (function(){
   try{
-    var VER='4.0'; // Bu numarayı değiştirince tüm veri DEF'e döner
+    var VER='4.1'; // Bu numarayı değiştirince tüm veri DEF'e döner
     var dataKeys={hero:'ma_hero',svc:'ma_svc',svc_meta:'ma_svc_meta',hiw:'ma_hiw',gal:'ma_gal',
                   hyg:'ma_hyg',rev:'ma_rev',contact:'ma_con',sts:'ma_st'};
     var stored=localStorage.getItem('ma_ver');
@@ -1620,7 +1624,7 @@ try{
 #quizOverlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.65);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:.75rem;opacity:0;transition:opacity .35s}
 #quizOverlay.show{opacity:1}
 #quizOverlay.hidden{display:none}
-.quiz-box{background:#fff;border-radius:1rem;max-width:380px;width:100%;overflow:hidden;transform:translateY(16px);transition:transform .35s cubic-bezier(.22,1,.36,1);position:relative;max-height:90vh;overflow-y:auto}
+.quiz-box{background:#fff;border-radius:1rem;max-width:460px;width:100%;overflow:hidden;transform:translateY(16px);transition:transform .35s cubic-bezier(.22,1,.36,1);position:relative;max-height:90vh;overflow-y:auto}
 #quizOverlay.show .quiz-box{transform:translateY(0)}
 .quiz-progress{height:3px;background:var(--cream-dark,#e8e0d4)}
 .quiz-progress-bar{height:100%;background:linear-gradient(90deg,var(--green),hsl(145,55%,35%));transition:width .4s;border-radius:0 2px 2px 0}
