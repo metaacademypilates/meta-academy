@@ -48,6 +48,17 @@ img{max-width:100%;display:block}a{text-decoration:none;color:inherit}button{cur
 .online-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;flex-shrink:0;animation:waPulse 2s infinite}
 @media(max-width:900px){.btn-online-badge{display:none}}
 
+/* Sol Chat Widget */
+#chat-float{position:fixed;bottom:1.5rem;left:1.5rem;z-index:95;display:flex;flex-direction:column;align-items:flex-start;gap:.5rem}
+#chat-btn{display:flex;align-items:center;gap:.65rem;padding:.75rem 1.2rem .75rem 1rem;border-radius:999px;background:var(--green);color:white;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(28,107,35,.45);transition:all .25s;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;animation:chatPulse 3s ease-in-out infinite}
+#chat-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(28,107,35,.6)}
+#chat-btn svg{width:22px;height:22px;fill:white;flex-shrink:0}
+.chat-label{display:flex;flex-direction:column;line-height:1.2}
+.chat-label span:first-child{font-size:.78rem;opacity:.8;font-weight:400}
+.chat-label span:last-child{font-size:.9rem;font-weight:700}
+@keyframes chatPulse{0%,100%{box-shadow:0 4px 20px rgba(28,107,35,.45)}50%{box-shadow:0 4px 28px rgba(28,107,35,.7),0 0 0 6px rgba(28,107,35,.12)}}
+@media(max-width:900px){#chat-float{bottom:5rem;left:1rem}#chat-btn{padding:.65rem 1rem .65rem .85rem;font-size:.82rem}}
+
 /* Floating WhatsApp Button */
 #wa-float{position:fixed;bottom:1.5rem;right:1.5rem;z-index:95;width:60px;height:60px;border-radius:50%;background:#25d366;color:white;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.5);transition:all .25s;animation:waPulse 2.5s ease-in-out infinite}
 #wa-float:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(37,211,102,.7)}
