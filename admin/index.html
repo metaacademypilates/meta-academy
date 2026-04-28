@@ -1236,43 +1236,42 @@ const get=k=>ld(k)||JSON.parse(JSON.stringify(DEF[k]));
 
 // ═══ AUTH ═══
 let mode='login', revStars=5;
+// ── LOCAL AUTH (SHA-256) ──
+var ADMIN_PW_KEY='ma_admin_pw';
+function _hashPw(pw){
+  return crypto.subtle.digest('SHA-256',new TextEncoder().encode(pw))
+    .then(function(buf){return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');});
+}
+(function initDefaultPw(){
+  if(!localStorage.getItem(ADMIN_PW_KEY)){
+    _hashPw('Meta2024!').then(function(h){localStorage.setItem(ADMIN_PW_KEY,h);});
+  }
+})();
 function doAuth(){
   var em=document.getElementById('em').value.trim();
   var pw=document.getElementById('pw').value;
   var err=document.getElementById('authErr');
   var btn=document.getElementById('mainBtn');
-  if(!em||!pw){err.classList.add('show');err.textContent='E-posta ve şifre girin.';return;}
+  if(!pw){err.classList.add('show');err.textContent='Şifre girin.';return;}
   btn.disabled=true;btn.textContent='Giriş yapılıyor...';
   err.classList.remove('show');
-  // Supabase auth.signInWithPassword — REST API
-  fetch('https://tffotrxrulotvoboeewv.supabase.co/auth/v1/token?grant_type=password',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMTE2MjgsImV4cCI6MjA5MTY4NzYyOH0.uWLZgU33MEEN0EyfRDAPZCzjZT6FGEDwazmJqUGSxdI'},
-    body:JSON.stringify({email:em,password:pw})
-  })
-  .then(function(r){return r.json();})
-  .then(function(data){
+  _hashPw(pw).then(function(hash){
     btn.disabled=false;btn.textContent='Giriş Yap';
-    if(data.access_token){
-      sessionStorage.setItem('ma_token',data.access_token);
+    var stored=localStorage.getItem(ADMIN_PW_KEY);
+    if(hash===stored){
       sessionStorage.setItem('ma_auth','1');
-      sessionStorage.setItem('ma_email',em);
+      sessionStorage.setItem('ma_email',em||'admin');
       document.getElementById('loginPage').style.display='none';
       document.getElementById('adminPage').classList.add('active');
-      document.getElementById('userEm').textContent=em;
+      document.getElementById('userEm').textContent=em||'admin';
       var av=document.querySelector('.sidebar-user-av');
       if(av)av.textContent=(em[0]||'A').toUpperCase();
       updateApptBadge();
       init();
     } else {
       err.classList.add('show');
-      err.textContent=data.error_description||data.msg||'E-posta veya şifre hatalı';
+      err.textContent='Şifre hatalı. Varsayılan: Meta2024!';
     }
-  })
-  .catch(function(){
-    btn.disabled=false;btn.textContent='Giriş Yap';
-    err.classList.add('show');
-    err.textContent='Sunucuya bağlanılamadı.';
   });
 }
 function doLogout(){
@@ -1286,24 +1285,6 @@ function doLogout(){
   if(document.getElementById('forgotBtn'))document.getElementById('forgotBtn').style.display='';
   if(document.getElementById('modeBtn'))document.getElementById('modeBtn').textContent='Hesabınız yok mu? Kayıt olun';
   if(document.getElementById('pwf'))document.getElementById('pwf').style.display='';
-}
-function changePw(){
-  var cur=document.getElementById("pw_cur").value;
-  var nw=document.getElementById("pw_new").value;
-  var nw2=document.getElementById("pw_new2").value;
-  if(!cur||!nw||!nw2){toast("Tüm alanları doldurun.");return;}
-  if(nw!==nw2){toast("Yeni şifreler eşleşmiyor.");return;}
-  if(nw.length<6){toast("Şifre en az 6 karakter olmalı.");return;}
-  _hashPw(cur).then(function(h){
-    if(h!==localStorage.getItem(ADMIN_PW_KEY)){toast("Mevcut şifre hatalı.");return;}
-    _hashPw(nw).then(function(nh){
-      localStorage.setItem(ADMIN_PW_KEY,nh);
-      document.getElementById("pw_cur").value="";
-      document.getElementById("pw_new").value="";
-      document.getElementById("pw_new2").value="";
-      toast("✅ Şifre güncellendi!");
-    });
-  });
 }
 function toggleMode(){
   if(mode==='forgot'){showLogin();return;}
