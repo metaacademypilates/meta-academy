@@ -338,8 +338,16 @@ img{max-width:100%;display:block}
           <label class="lf-label">Şifre</label>
           <input type="password" class="lf-input" id="pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAuth()"/>
         </div>
-        <div class="login-err" id="authErr">E-posta veya şifre hatalı</div>
-        <button class="btn-login" onclick="doAuth()" id="mainBtn">Giriş Yap</button>
+        <div class="lf-group" id="reg_name_grp" style="display:none">
+          <label class="lf-label">Ad Soyad</label>
+          <input type="text" class="lf-input" id="reg_name" placeholder="Adınız Soyadınız"/>
+        </div>
+        <div class="lf-group" id="reg_pw2_grp" style="display:none">
+          <label class="lf-label">Şifre (Tekrar)</label>
+          <input type="password" class="lf-input" id="reg_pw2" placeholder="••••••••"/>
+        </div>
+        <div class="login-err" id="authErr"></div>
+        <button class="btn-login" onclick="handleMainBtn()" id="mainBtn">Giriş Yap</button>
         <div class="login-links">
           <button class="login-link tlink-muted" id="forgotBtn" onclick="showForgot()">Şifremi unuttum</button>
           <button class="login-link tlink-muted" id="modeBtn" onclick="toggleMode()">Hesap oluştur</button>
@@ -410,6 +418,11 @@ img{max-width:100%;display:block}
         <button class="nav-item" onclick="sw('order',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           Sayfa Sıralama
+        </button>
+        <button class="nav-item" onclick="sw('users',this);loadUsers()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Kullanıcılar
+          <span class="nav-badge" id="pendingBadge" style="background:#f59e0b;display:none">0</span>
         </button>
         <button class="nav-item" onclick="sw('quiz',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
@@ -1010,6 +1023,15 @@ img{max-width:100%;display:block}
       </div>
     </div>
 
+    <!-- ── KULLANICILAR ── -->
+    <div class="panel" id="p-users">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+        <div style="font-size:1rem;font-weight:700">Hesap Talepleri</div>
+        <button class="btn btn-outline btn-sm" onclick="loadUsers()">↻ Yenile</button>
+      </div>
+      <div id="usersContainer"><p style="font-size:.82rem;color:var(--muted-fg)">Yükleniyor...</p></div>
+    </div>
+
     <!-- ── ÖNİZLEME ── -->
     <div class="panel" id="p-preview">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
@@ -1051,6 +1073,7 @@ const PAGE_HEADERS = {
   con:  {title:'İletişim & Harita', sub:'İletişim bilgileri ve harita ayarları'},
   order:{title:'Sayfa Sıralaması', sub:'Bölümleri sürükleyerek sıralayın'},
   quiz:{title:'Quiz / Onboarding', sub:'Ziyaretçilere soru sorup doğru hizmete yönlendirin'},
+  users:{title:'Kullanıcı Yönetimi', sub:'Hesap taleplerini onaylayın veya reddedin'},
   style:{title:'Stil & Tasarım', sub:'Site renklerini ve fontları özelleştirin'},
   preview:{title:'Site Önizleme', sub:'Değişiklikleri canlı görün'},
 };
@@ -1238,6 +1261,8 @@ const get=k=>ld(k)||JSON.parse(JSON.stringify(DEF[k]));
 let mode='login', revStars=5;
 // ── LOCAL AUTH (SHA-256) ──
 var ADMIN_PW_KEY='ma_admin_pw';
+var SB_URL='https://tffotrxrulotvoboeewv.supabase.co';
+var ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMTE2MjgsImV4cCI6MjA5MTY4NzYyOH0.uWLZgU33MEEN0EyfRDAPZCzjZT6FGEDwazmJqUGSxdI';
 function _hashPw(pw){
   return crypto.subtle.digest('SHA-256',new TextEncoder().encode(pw))
     .then(function(buf){return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');});
@@ -1247,6 +1272,18 @@ function _hashPw(pw){
     _hashPw('Meta2024!').then(function(h){localStorage.setItem(ADMIN_PW_KEY,h);});
   }
 })();
+function handleMainBtn(){if(mode==='signup')doRegister();else doAuth();}
+function loginSuccess(em){
+  sessionStorage.setItem('ma_auth','1');
+  sessionStorage.setItem('ma_email',em);
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('adminPage').classList.add('active');
+  document.getElementById('userEm').textContent=em;
+  var av=document.querySelector('.sidebar-user-av');
+  if(av)av.textContent=(em[0]||'A').toUpperCase();
+  updateApptBadge();
+  init();
+}
 function doAuth(){
   var em=document.getElementById('em').value.trim();
   var pw=document.getElementById('pw').value;
@@ -1256,22 +1293,62 @@ function doAuth(){
   btn.disabled=true;btn.textContent='Giriş yapılıyor...';
   err.classList.remove('show');
   _hashPw(pw).then(function(hash){
-    btn.disabled=false;btn.textContent='Giriş Yap';
     var stored=localStorage.getItem(ADMIN_PW_KEY);
-    if(hash===stored){
-      sessionStorage.setItem('ma_auth','1');
-      sessionStorage.setItem('ma_email',em||'admin');
-      document.getElementById('loginPage').style.display='none';
-      document.getElementById('adminPage').classList.add('active');
-      document.getElementById('userEm').textContent=em||'admin';
-      var av=document.querySelector('.sidebar-user-av');
-      if(av)av.textContent=(em[0]||'A').toUpperCase();
-      updateApptBadge();
-      init();
-    } else {
-      err.classList.add('show');
-      err.textContent='Şifre hatalı. Varsayılan: Meta2024!';
-    }
+    // Admin: yerel SHA-256 kontrolü
+    if(hash===stored){btn.disabled=false;btn.textContent='Giriş Yap';loginSuccess(em||'admin');return;}
+    // Kullanıcı: Supabase kontrolü
+    if(!em){btn.disabled=false;btn.textContent='Giriş Yap';err.classList.add('show');err.textContent='E-posta ve şifre girin.';return;}
+    fetch(SB_URL+'/rest/v1/user_accounts?select=id,status&email=eq.'+encodeURIComponent(em)+'&password_hash=eq.'+encodeURIComponent(hash)+'&limit=1',{
+      headers:{'apikey':ANON_KEY,'Authorization':'Bearer '+ANON_KEY}
+    })
+    .then(function(r){return r.json();})
+    .then(function(data){
+      btn.disabled=false;btn.textContent='Giriş Yap';
+      if(data&&data.length){
+        var u=data[0];
+        if(u.status==='approved'){loginSuccess(em);}
+        else if(u.status==='pending'){err.classList.add('show');err.textContent='Hesabınız henüz onaylanmadı. Admin onayı bekleniyor.';}
+        else{err.classList.add('show');err.textContent='Hesabınız reddedildi. Yöneticinize başvurun.';}
+      } else {
+        err.classList.add('show');err.textContent='E-posta veya şifre hatalı.';
+      }
+    })
+    .catch(function(){btn.disabled=false;btn.textContent='Giriş Yap';err.classList.add('show');err.textContent='Bağlantı hatası.';});
+  });
+}
+function doRegister(){
+  var em=document.getElementById('em').value.trim();
+  var name=document.getElementById('reg_name').value.trim();
+  var pw=document.getElementById('pw').value;
+  var pw2=document.getElementById('reg_pw2').value;
+  var err=document.getElementById('authErr');
+  var btn=document.getElementById('mainBtn');
+  err.style.color='';
+  if(!em||!pw||!pw2){err.classList.add('show');err.textContent='Tüm alanları doldurun.';return;}
+  if(pw!==pw2){err.classList.add('show');err.textContent='Şifreler eşleşmiyor.';return;}
+  if(pw.length<6){err.classList.add('show');err.textContent='Şifre en az 6 karakter olmalı.';return;}
+  btn.disabled=true;btn.textContent='Kaydediliyor...';
+  err.classList.remove('show');
+  _hashPw(pw).then(function(hash){
+    fetch(SB_URL+'/rest/v1/user_accounts',{
+      method:'POST',
+      headers:{'apikey':ANON_KEY,'Authorization':'Bearer '+ANON_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({email:em,password_hash:hash,display_name:name||em,status:'pending'})
+    })
+    .then(function(r){
+      btn.disabled=false;btn.textContent='Hesap Oluştur';
+      if(r.ok||r.status===201){
+        err.style.color='#4ade80';err.classList.add('show');
+        err.textContent='✓ Başvurunuz alındı! Admin onayı bekleniyor.';
+        setTimeout(function(){err.style.color='';showLogin();},3000);
+      } else {
+        return r.json().then(function(d){
+          err.classList.add('show');
+          err.textContent=(d&&d.message&&d.message.includes('duplicate'))?'Bu e-posta zaten kayıtlı.':'Kayıt başarısız. Tekrar deneyin.';
+        });
+      }
+    })
+    .catch(function(){btn.disabled=false;btn.textContent='Hesap Oluştur';err.classList.add('show');err.textContent='Bağlantı hatası.';});
   });
 }
 function doLogout(){
@@ -1289,10 +1366,15 @@ function doLogout(){
 function toggleMode(){
   if(mode==='forgot'){showLogin();return;}
   mode=mode==='login'?'signup':'login';
-  document.getElementById('lsub').textContent=mode==='signup'?'Yeni hesap oluşturun':'Admin paneline giriş yapın';
-  document.getElementById('mainBtn').textContent=mode==='signup'?'Hesap Oluştur':'Giriş Yap';
-  document.getElementById('modeBtn').textContent=mode==='signup'?'Zaten hesabınız var mı? Giriş yapın':'Hesabınız yok mu? Kayıt olun';
-  document.getElementById('forgotBtn').style.display=mode==='signup'?'none':'';
+  var s=mode==='signup';
+  document.getElementById('loginTitle').textContent=s?'Hesap Oluştur':'Yönetici Girişi';
+  document.getElementById('lsub').textContent=s?'Yeni hesap talep edin':'Admin paneline giriş yapın';
+  document.getElementById('mainBtn').textContent=s?'Hesap Oluştur':'Giriş Yap';
+  document.getElementById('modeBtn').textContent=s?'← Giriş yapın':'Hesap oluşturun →';
+  document.getElementById('forgotBtn').style.display=s?'none':'';
+  document.getElementById('reg_name_grp').style.display=s?'':'none';
+  document.getElementById('reg_pw2_grp').style.display=s?'':'none';
+  document.getElementById('authErr').classList.remove('show');
 }
 function showForgot(){
   mode='forgot';
@@ -1304,16 +1386,18 @@ function showForgot(){
 }
 function showLogin(){
   mode='login';
+  document.getElementById('loginTitle').textContent='Yönetici Girişi';
   document.getElementById('lsub').textContent='Admin paneline giriş yapın';
   document.getElementById('mainBtn').textContent='Giriş Yap';
   document.getElementById('pwf').style.display='';
   document.getElementById('forgotBtn').style.display='';
-  document.getElementById('modeBtn').textContent='Hesabınız yok mu? Kayıt olun';
+  document.getElementById('modeBtn').textContent='Hesap oluşturun →';
   document.getElementById('resetSent').style.display='none';
-  document.getElementById('loginForm').style.display='block';
+  document.getElementById('reg_name_grp').style.display='none';
+  document.getElementById('reg_pw2_grp').style.display='none';
+  document.getElementById('authErr').classList.remove('show');
 }
-const savedEm=sessionStorage.getItem('ma_auth');
-if(savedEm){document.getElementById('loginPage').style.display='none';document.getElementById('adminPage').classList.add('active');document.getElementById('userEm').textContent=savedEm;}
+
 
 // ═══ TABS ═══
 
@@ -2438,39 +2522,7 @@ function ensureDefaultData(){
 }
 
 function init(){ensureDefaultData();loadSt();loadHero();loadHeroCanvas();renderSvc();renderHiw();renderHyg();renderRev();renderGal();loadCon();renderCustomCards();renderAppt();loadStylePanel();}
-// Sayfa yüklenince token doğrula (Supabase)
-(function(){
-  var token=sessionStorage.getItem('ma_token');
-  if(!token){return;}
-  fetch('https://tffotrxrulotvoboeewv.supabase.co/auth/v1/user',{
-    headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMTE2MjgsImV4cCI6MjA5MTY4NzYyOH0.uWLZgU33MEEN0EyfRDAPZCzjZT6FGEDwazmJqUGSxdI','Authorization':'Bearer '+token}
-  })
-  .then(function(r){return r.json();})
-  .then(function(data){
-    if(data.email){
-      document.getElementById('loginPage').style.display='none';
-      document.getElementById('adminPage').classList.add('active');
-      var em=data.email;
-      document.getElementById('userEm').textContent=em;
-      var av=document.querySelector('.sidebar-user-av');
-      if(av)av.textContent=(em[0]||'A').toUpperCase();
-      sessionStorage.setItem('ma_email',em);
-      updateApptBadge();
-      init();
-    } else {
-      sessionStorage.removeItem('ma_token');
-      sessionStorage.removeItem('ma_auth');
-    }
-  })
-  .catch(function(){
-    if(sessionStorage.getItem('ma_auth')){
-      document.getElementById('loginPage').style.display='none';
-      document.getElementById('adminPage').classList.add('active');
-      init();
-    }
-  });
-})();
-document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
+
 
 
 // ── AUTH: real Supabase auth only (overrides removed) ──
@@ -2493,26 +2545,93 @@ function changePw(){
     });
   });
 }
-function toggleMode(){
-  document.getElementById('authErr').classList.remove('show');
-  document.getElementById('authErr').classList.add('show');
-  document.getElementById('authErr').textContent='Yeni kayıt kapalı. Yetkili kullanıcı ekleme için yöneticinize başvurun.';
-}
 
-// Check auth on load — require a real Supabase access_token, not just the flag
-if(sessionStorage.getItem('ma_auth')&&sessionStorage.getItem('ma_token')){
+
+// Auth check on load
+if(sessionStorage.getItem('ma_auth')){
   document.getElementById('loginPage').style.display='none';
   document.getElementById('adminPage').classList.add('active');
-  const em=sessionStorage.getItem('ma_email')||'';
-  document.getElementById('userEm').textContent=em;
-  const av=document.querySelector('.sidebar-user-av');
-  if(av&&em) av.textContent=em[0].toUpperCase();
+  var _em=sessionStorage.getItem('ma_email')||'';
+  document.getElementById('userEm').textContent=_em;
+  var _av=document.querySelector('.sidebar-user-av');
+  if(_av&&_em)_av.textContent=_em[0].toUpperCase();
   updateApptBadge();
   init();
-  // Start mini canvas after a brief delay
-  setTimeout(startMiniCanvas, 500);
+  setTimeout(startMiniCanvas,500);
 }
-document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
+document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')handleMainBtn();});
+document.getElementById('reg_pw2').addEventListener('keydown',function(e){if(e.key==='Enter')doRegister();});
+
+// ── KULLANICI YÖNETİMİ ──
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function loadUsers(){
+  var con=document.getElementById('usersContainer');
+  if(!con)return;
+  con.innerHTML='<p style="font-size:.82rem;color:var(--muted-fg)">Yükleniyor...</p>';
+  fetch(SB_URL+'/rest/v1/user_accounts?select=*&order=created_at.desc',{
+    headers:{'apikey':SVC_KEY,'Authorization':'Bearer '+SVC_KEY}
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){renderUsers(Array.isArray(data)?data:[]);})
+  .catch(function(){con.innerHTML='<p style="color:#f87171;font-size:.82rem">Veriler yüklenemedi.</p>';});
+}
+function renderUsers(users){
+  var pending=users.filter(function(u){return u.status==='pending';});
+  var approved=users.filter(function(u){return u.status==='approved';});
+  var rejected=users.filter(function(u){return u.status==='rejected';});
+  var h='';
+  if(pending.length){
+    h+='<div style="font-size:.85rem;font-weight:700;margin-bottom:.65rem;color:#d97706">🕐 Onay Bekleyen ('+pending.length+')</div>';
+    pending.forEach(function(u){
+      h+='<div style="display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:#fff;border:1.5px solid #fbbf24;border-radius:.65rem;margin-bottom:.5rem">';
+      h+='<div style="flex:1"><div style="font-size:.85rem;font-weight:600">'+escHtml(u.display_name||u.email)+'</div>';
+      h+='<div style="font-size:.75rem;color:#6b7280">'+escHtml(u.email)+'</div>';
+      h+='<div style="font-size:.7rem;color:#9ca3af">'+new Date(u.created_at).toLocaleString('tr-TR')+'</div></div>';
+      h+='<button class="btn btn-primary btn-sm" onclick="manageUser(\''+u.id+'\',\'approved\')">✓ Onayla</button> ';
+      h+='<button class="btn btn-sm" style="border:1.5px solid #dc2626;color:#dc2626;border-radius:.45rem;padding:.32rem .7rem;font-size:.73rem;font-weight:600;cursor:pointer;background:#fff" onclick="manageUser(\''+u.id+'\',\'rejected\')">✗ Reddet</button>';
+      h+='</div>';
+    });
+    if(approved.length||rejected.length)h+='<hr style="margin:1rem 0;border:none;border-top:1px solid var(--border)">';
+  } else {
+    h+='<p style="font-size:.82rem;color:var(--muted-fg);margin-bottom:1rem">✅ Bekleyen hesap talebi yok.</p>';
+  }
+  if(approved.length){
+    h+='<div style="font-size:.85rem;font-weight:700;margin-bottom:.5rem;color:#1c6b23">✅ Onaylı Kullanıcılar ('+approved.length+')</div>';
+    approved.forEach(function(u){
+      h+='<div style="display:flex;align-items:center;gap:.75rem;padding:.6rem 1rem;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:.65rem;margin-bottom:.35rem">';
+      h+='<div style="flex:1"><div style="font-size:.82rem;font-weight:600">'+escHtml(u.display_name||u.email)+'</div>';
+      h+='<div style="font-size:.72rem;color:#6b7280">'+escHtml(u.email)+'</div></div>';
+      h+='<button class="btn btn-sm" style="border:1.5px solid #dc2626;color:#dc2626;border-radius:.45rem;padding:.28rem .6rem;font-size:.72rem;font-weight:600;cursor:pointer;background:#fff" onclick="manageUser(\''+u.id+'\',\'rejected\')">Kaldır</button>';
+      h+='</div>';
+    });
+  }
+  if(rejected.length){
+    h+='<div style="font-size:.85rem;font-weight:700;margin:.75rem 0 .5rem;color:#dc2626">✗ Reddedilenler ('+rejected.length+')</div>';
+    rejected.forEach(function(u){
+      h+='<div style="display:flex;align-items:center;gap:.75rem;padding:.6rem 1rem;background:#fef2f2;border:1px solid #fecaca;border-radius:.65rem;margin-bottom:.35rem">';
+      h+='<div style="flex:1"><div style="font-size:.82rem;font-weight:600">'+escHtml(u.display_name||u.email)+'</div>';
+      h+='<div style="font-size:.72rem;color:#6b7280">'+escHtml(u.email)+'</div></div>';
+      h+='<button class="btn btn-primary btn-sm" onclick="manageUser(\''+u.id+'\',\'approved\')">↩ Onayla</button>';
+      h+='</div>';
+    });
+  }
+  var con=document.getElementById('usersContainer');
+  if(con)con.innerHTML=h||'<p style="color:var(--muted-fg);font-size:.82rem">Kayıtlı kullanıcı yok.</p>';
+  var badge=document.getElementById('pendingBadge');
+  if(badge){badge.textContent=pending.length;badge.style.display=pending.length?'':'none';}
+}
+function manageUser(id,status){
+  fetch(SB_URL+'/rest/v1/user_accounts?id=eq.'+id,{
+    method:'PATCH',
+    headers:{'apikey':SVC_KEY,'Authorization':'Bearer '+SVC_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify({status:status})
+  })
+  .then(function(r){
+    if(r.ok){toast(status==='approved'?'✅ Hesap onaylandı':'✗ Hesap reddedildi');loadUsers();}
+    else toast('Hata oluştu.','e');
+  })
+  .catch(function(){toast('Bağlantı hatası.','e');});
+}
 
 // ── SECTION ORDER (drag-drop) ──
 const SVC_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k';
