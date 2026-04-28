@@ -1264,7 +1264,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--g5);box-shadow:0 0 0 
       <h1>Uyeler</h1>
       <p class="subtitle">Tum uyeleri yonetin</p>
     </div>
-    <button class="btn btn-primary" onclick="openModal('add-member-modal')">
+    <button class="btn btn-primary" onclick="openAddMemberModal()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Uye Ekle
     </button>
@@ -5560,40 +5560,90 @@ function addIncomeEntry() {
   renderFinance();
 }
 
-function addMemberSave() {
-  var nameEl  = document.getElementById('new-member-name');
-  var emailEl = document.getElementById('new-member-email');
-  var phoneEl = document.getElementById('new-member-phone');
-  var trainerEl = document.getElementById('new-member-trainer');
+function openAddMemberModal() {
+  var psel = document.getElementById('nm-pkg');
+  var tsel = document.getElementById('nm-trainer');
+  if (psel) {
+    psel.innerHTML = '<option value="">Paket secin</option>';
+    pkgs.forEach(function(p) {
+      var o = document.createElement('option');
+      o.value = p.id;
+      o.textContent = p.name + ' — ₺' + p.price;
+      psel.appendChild(o);
+    });
+  }
+  if (tsel) {
+    tsel.innerHTML = '<option value="">Egitmen secin</option>';
+    trainers.forEach(function(t) {
+      var o = document.createElement('option');
+      o.value = t.id;
+      o.textContent = t.name;
+      tsel.appendChild(o);
+    });
+  }
+  openModal('add-member-modal');
+}
 
-  if (!nameEl || !emailEl) return;
-  var name  = nameEl.value.trim();
-  var email = emailEl.value.trim();
-  var phone = phoneEl ? phoneEl.value.trim() : '';
-  var trainerId = trainerEl ? trainerEl.value : 't1';
+function addMemberSave() {
+  var first    = (document.getElementById('nm-first')   || {}).value || '';
+  var last     = (document.getElementById('nm-last')    || {}).value || '';
+  var email    = (document.getElementById('nm-email')   || {}).value || '';
+  var phone    = (document.getElementById('nm-phone')   || {}).value || '';
+  var pkgId    = (document.getElementById('nm-pkg')     || {}).value || '';
+  var trainerId= (document.getElementById('nm-trainer') || {}).value || 't1';
+  var health   = (document.getElementById('nm-health')  || {}).value || '';
+  var pass     = (document.getElementById('new-member-pass') || {}).value || '';
+
+  var name = (first.trim() + ' ' + last.trim()).trim();
+  email = email.trim();
 
   if (!name || !email) {
-    toast('Ad ve e-posta giriniz.', 'error');
+    toast('Ad, soyad ve e-posta giriniz.', 'error');
     return;
+  }
+  if (accounts.some(function(a){ return a.email === email; })) {
+    toast('Bu e-posta zaten kayitli.', 'error');
+    return;
+  }
+
+  var slots = {};
+  var end = '';
+  if (pkgId) {
+    var pkg = pkgs.find(function(p){ return p.id === pkgId; });
+    if (pkg) {
+      pkg.slots.forEach(function(s){ slots[s.type] = {t: s.count, u: 0}; });
+      var d = new Date();
+      d.setDate(d.getDate() + (pkg.validity || 30));
+      end = d.toISOString().slice(0, 10);
+    }
   }
 
   var newMember = {
     id: 'm' + (members.length + 1),
     name: name,
     email: email,
-    phone: phone,
-    pkgId: null,
-    slots: {},
-    end: '',
+    phone: phone.trim(),
+    pkgId: pkgId || null,
+    slots: slots,
+    end: end,
     trainer: trainerId,
-    health: '',
+    health: health.trim(),
     notes: ''
   };
-
   members.push(newMember);
-  nameEl.value = '';
-  emailEl.value = '';
-  if (phoneEl) phoneEl.value = '';
+
+  if (pass) {
+    accounts.push({email: email, pass: pass, role: 'member', trainerId: null, name: name});
+  }
+
+  ['nm-first','nm-last','nm-email','nm-phone','nm-health','new-member-pass'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  var psel = document.getElementById('nm-pkg');
+  var tsel = document.getElementById('nm-trainer');
+  if (psel) psel.selectedIndex = 0;
+  if (tsel) tsel.selectedIndex = 0;
 
   toast(name + ' eklendi.');
   closeModal('add-member-modal');
