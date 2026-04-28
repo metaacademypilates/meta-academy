@@ -1539,7 +1539,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--g5);box-shadow:0 0 0 
       <h1>Uye Odemeleri</h1>
       <p class="subtitle">Odeme kayitlari ve takip</p>
     </div>
-    <button class="btn btn-primary" onclick="openModal('log-payment-modal')">
+    <button class="btn btn-primary" onclick="openLogPaymentModal()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       + Odeme Kaydet
     </button>
@@ -1932,41 +1932,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--g5);box-shadow:0 0 0 
   <div class="card">
     <div class="card-header"><h3>Bugunun Dersleri</h3></div>
     <div class="card-body">
-      <div class="schedule-list">
-        <div class="schedule-item">
-          <div class="schedule-time">09:00</div>
-          <div class="schedule-info">
-            <strong>Pilates - Bireysel</strong>
-            <span>Ayse Y.</span>
-          </div>
-          <div class="schedule-actions">
-            <button class="btn btn-sm btn-success" onclick="markAttendance('present')">Katildi</button>
-            <button class="btn btn-sm btn-danger" onclick="markAttendance('absent')">Gelmedi</button>
-          </div>
-        </div>
-        <div class="schedule-item">
-          <div class="schedule-time">11:00</div>
-          <div class="schedule-info">
-            <strong>EMS - Duet</strong>
-            <span>Mehmet K., Zeynep A.</span>
-          </div>
-          <div class="schedule-actions">
-            <button class="btn btn-sm btn-success" onclick="markAttendance('present')">Katildi</button>
-            <button class="btn btn-sm btn-danger" onclick="markAttendance('absent')">Gelmedi</button>
-          </div>
-        </div>
-        <div class="schedule-item">
-          <div class="schedule-time">14:00</div>
-          <div class="schedule-info">
-            <strong>Atletik - Bireysel</strong>
-            <span>Ali R.</span>
-          </div>
-          <div class="schedule-actions">
-            <button class="btn btn-sm btn-success" onclick="markAttendance('present')">Katildi</button>
-            <button class="btn btn-sm btn-danger" onclick="markAttendance('absent')">Gelmedi</button>
-          </div>
-        </div>
-      </div>
+      <div id="day-lessons" class="schedule-list"></div>
     </div>
   </div>
 
@@ -2077,6 +2043,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--g5);box-shadow:0 0 0 
       <div id="ml-upcoming" class="lesson-list"><p class="empty-state">Yaklasan ders bulunmuyor.</p></div>
     </div>
   </div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-header"><h3>Yoklama Gecmisi</h3></div>
+    <div class="card-body" id="ml-attendance-history"></div>
+  </div>
 </section>
 
 <!-- ======================== MEMBER: TAKVIMIM ======================== -->
@@ -2114,6 +2084,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--g5);box-shadow:0 0 0 
   <div class="card" style="margin-top:20px">
     <div class="card-header"><h3>Kilo Gecmisi</h3></div>
     <div class="card-body" id="mp-meas-chart"></div>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <div class="card-header"><h3>Cevre Olcumleri Trendi</h3></div>
+    <div class="card-body" id="mp-circ-chart"></div>
   </div>
 </section>
 
@@ -2678,8 +2652,25 @@ input:focus,select:focus,textarea:focus{border-color:var(--g5);box-shadow:0 0 0 
       <label class="form-label">Egitmen</label>
       <select id="nm-trainer" class="form-select"><option value="">Egitmen secin</option></select>
 
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+        <div>
+          <label class="form-label">Yas</label>
+          <input type="number" id="nm-age" class="form-input" placeholder="34" min="10" max="99">
+        </div>
+        <div>
+          <label class="form-label">Baslangic Kilosu (kg)</label>
+          <input type="number" id="nm-weight" class="form-input" placeholder="72" step="0.1">
+        </div>
+      </div>
+
+      <label class="form-label">Hedef</label>
+      <input type="text" id="nm-goal" class="form-input" placeholder="Postur duzeltme, kilo kontrolu, bel agrisi...">
+
+      <label class="form-label">Postur Notu</label>
+      <textarea id="nm-posture" class="form-input" rows="2" placeholder="Omuzlar one dusmis, anterior pelvic tilt vb."></textarea>
+
       <label class="form-label">Saglik Notlari</label>
-      <textarea id="nm-health" class="form-input" rows="2" placeholder="Saglik durumu, alerjiler vb."></textarea>
+      <textarea id="nm-health" class="form-input" rows="2" placeholder="Saglik durumu, alerjiler, doktor engeli vb."></textarea>
 
       <label class="form-label">Sistem Giris Sifresi</label>
       <input type="text" id="new-member-pass" class="form-input" placeholder="Sifre">
@@ -2714,6 +2705,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--g5);box-shadow:0 0 0 
         <input type="text" id="d-phone" class="form-input" readonly>
         <label class="form-label">Saglik Notlari</label>
         <textarea id="d-health" class="form-input" rows="2" readonly></textarea>
+        <div id="d-trainer-row" style="margin-top:12px;display:none">
+          <label class="form-label">Egitmen Atamasi</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="d-trainer-sel" class="form-select" style="flex:1"></select>
+            <button class="btn btn-primary btn-sm" onclick="saveMemberTrainer()">Kaydet</button>
+          </div>
+        </div>
       </div>
 
       <!-- Package Tab -->
@@ -4105,7 +4103,7 @@ function showPage(id) {
   switch (id) {
     case 'dashboard':         renderDashboardKPI(); renderAdminCampaigns(); break;
     case 'members':           renderMembers(); break;
-    case 'packages':          renderPkgs(); break;
+    case 'packages':          renderPkgs(); fillDrops(); break;
     case 'payroll':           renderPayroll(); break;
     case 'finance':           renderFinance(); break;
     case 'lesson-types':      buildLessonCards(); break;
@@ -4167,22 +4165,29 @@ function toggleEmsSection() {
 // ── Members ──
 
 function renderMembers(filterArg) {
-  var container = document.getElementById('members-table-body');
+  var container = document.getElementById('m-tbody');
   if (!container) return;
 
-  var searchEl = document.getElementById('member-search');
-  var filterEl = document.getElementById('member-filter');
+  var searchEl = document.getElementById('m-search');
+  var filterEl = document.getElementById('m-filter');
   var searchVal = searchEl ? searchEl.value.toLowerCase() : '';
-  var filterVal = filterArg || (filterEl ? filterEl.value : 'all');
+  var filterVal = filterArg || (filterEl ? filterEl.value : '');
 
   var html = '';
   members.forEach(function(m) {
     // Search filter
     if (searchVal && m.name.toLowerCase().indexOf(searchVal) === -1 && m.email.toLowerCase().indexOf(searchVal) === -1) return;
 
-    // Type filter
-    if (filterVal !== 'all') {
-      if (!m.slots[filterVal]) return;
+    // Status filter
+    if (filterVal === 'active') {
+      var daysLeft = Math.ceil((new Date(m.end) - new Date()) / 86400000);
+      if (daysLeft <= 0) return;
+    } else if (filterVal === 'passive') {
+      var daysLeft2 = Math.ceil((new Date(m.end) - new Date()) / 86400000);
+      if (daysLeft2 > 0) return;
+    } else if (filterVal === 'expiring') {
+      var daysLeft3 = Math.ceil((new Date(m.end) - new Date()) / 86400000);
+      if (daysLeft3 <= 0 || daysLeft3 > 7) return;
     }
 
     var pkg = pkgById(m.pkgId);
@@ -4228,7 +4233,7 @@ function renderMembers(filterArg) {
 }
 
 function renderPkgs() {
-  var container = document.getElementById('pkgs-table-body');
+  var container = document.getElementById('pkg-tbody');
   if (!container) return;
   var html = '';
   pkgs.forEach(function(p) {
@@ -4248,14 +4253,14 @@ function renderPkgs() {
 }
 
 function fillDrops() {
-  var sel = document.getElementById('assign-pkg-select');
+  var sel = document.getElementById('a-pkg');
   if (!sel) return;
   sel.innerHTML = '<option value="">Paket seciniz...</option>';
   pkgs.forEach(function(p) {
     sel.innerHTML += '<option value="' + p.id + '">' + p.name + ' - ' + fmt(p.price) + '</option>';
   });
 
-  var memSel = document.getElementById('assign-member-select');
+  var memSel = document.getElementById('a-member');
   if (!memSel) return;
   memSel.innerHTML = '<option value="">Uye seciniz...</option>';
   members.forEach(function(m) {
@@ -4264,9 +4269,9 @@ function fillDrops() {
 }
 
 function previewAssign() {
-  var pkgSel = document.getElementById('assign-pkg-select');
-  var memSel = document.getElementById('assign-member-select');
-  var preview = document.getElementById('assign-preview');
+  var pkgSel = document.getElementById('a-pkg');
+  var memSel = document.getElementById('a-member');
+  var preview = document.getElementById('a-prev');
   if (!pkgSel || !memSel || !preview) return;
 
   var pkg = pkgById(pkgSel.value);
@@ -4291,8 +4296,8 @@ function previewAssign() {
 }
 
 function doAssign() {
-  var pkgSel = document.getElementById('assign-pkg-select');
-  var memSel = document.getElementById('assign-member-select');
+  var pkgSel = document.getElementById('a-pkg');
+  var memSel = document.getElementById('a-member');
   if (!pkgSel || !memSel) return;
 
   var pkg = pkgById(pkgSel.value);
@@ -4389,13 +4394,13 @@ function updateTotal() {
 }
 
 function savePkg() {
-  var nameEl = document.getElementById('new-pkg-name');
-  var validEl = document.getElementById('new-pkg-validity');
-  var priceEl = document.getElementById('new-pkg-price');
-  var comboEl = document.getElementById('new-pkg-combo');
+  var nameEl  = document.getElementById('pn');
+  var validEl = document.getElementById('pv');
+  var priceEl = document.getElementById('pp');
+  var typeEl  = document.getElementById('pt');
 
   if (!nameEl || !priceEl) return;
-  var name = nameEl.value.trim();
+  var name  = nameEl.value.trim();
   var price = parseInt(priceEl.value);
   var validity = validEl ? parseInt(validEl.value) : 30;
 
@@ -4404,7 +4409,7 @@ function savePkg() {
     return;
   }
 
-  var isCombo = comboEl ? comboEl.checked : comboSlots.length > 1;
+  var isCombo = typeEl ? typeEl.value === 'combo' : comboSlots.length > 1;
 
   var newPkg = {
     id: 'pk' + (pkgs.length + 1),
@@ -4447,6 +4452,21 @@ function openDetail(id) {
   var healthEl = document.getElementById('d-health');
   if (healthEl) healthEl.value = m.health || '';
 
+  // Trainer assignment (admin only)
+  var trainerRow = document.getElementById('d-trainer-row');
+  var trainerSel = document.getElementById('d-trainer-sel');
+  if (trainerRow && trainerSel) {
+    if (currentRole === 'admin') {
+      trainerRow.style.display = 'block';
+      trainerSel.innerHTML = '<option value="">Egitmen yok</option>';
+      trainers.forEach(function(t) {
+        trainerSel.innerHTML += '<option value="' + t.id + '"' + (m.trainer === t.id ? ' selected' : '') + '>' + t.name + '</option>';
+      });
+    } else {
+      trainerRow.style.display = 'none';
+    }
+  }
+
   // Fill Package tab
   var pkgView = document.getElementById('d-pkg-v');
   if (pkgView) {
@@ -4475,6 +4495,32 @@ function openDetail(id) {
       '<div style="background:var(--g8);border-radius:8px;padding:10px;text-align:center"><div style="font-size:14px;font-weight:800;color:var(--g3)">' + fmt(debtInfo.paid) + '</div><div style="font-size:10px;color:var(--text3)">Odenen</div></div>' +
       '<div style="background:' + (debtInfo.debt > 0 ? 'var(--red-bg)' : 'var(--g8)') + ';border-radius:8px;padding:10px;text-align:center"><div style="font-size:14px;font-weight:800;color:' + (debtInfo.debt > 0 ? 'var(--red)' : 'var(--g3)') + '">' + fmt(debtInfo.debt) + '</div><div style="font-size:10px;color:var(--text3)">Borc</div></div>' +
       '</div>';
+    // Payment history
+    var memPayments = [];
+    incomes.forEach(function(inc) {
+      if (inc.desc && inc.desc.indexOf(m.name) !== -1) memPayments.push({date: inc.date, amount: inc.amount, method: inc.method || '-', status: 'odendi'});
+    });
+    if (typeof pendingPayments !== 'undefined') {
+      pendingPayments.forEach(function(p) {
+        if (p.memberId === m.id) memPayments.push({date: p.date || '-', amount: p.amount, method: p.method || '-', status: p.status});
+      });
+    }
+    memPayments.sort(function(a, b) { return b.date > a.date ? 1 : -1; });
+    if (memPayments.length > 0) {
+      slotHtml += '<div style="margin-top:16px"><div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px">Odeme Gecmisi</div>';
+      memPayments.forEach(function(p) {
+        var statusColor = p.status === 'odendi' || p.status === 'approved' ? 'var(--g2)' : p.status === 'pending' ? 'var(--amber)' : 'var(--red)';
+        var statusLabel = p.status === 'odendi' ? 'Odendi' : p.status === 'approved' ? 'Onaylandi' : p.status === 'pending' ? 'Bekliyor' : p.status;
+        slotHtml += '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">' +
+          '<div><span style="font-size:12px;color:var(--text3)">' + p.date + '</span> <span style="font-size:11px;color:var(--text4)">' + p.method + '</span></div>' +
+          '<div style="display:flex;gap:8px;align-items:center">' +
+          '<span style="font-size:13px;font-weight:700">' + fmt(p.amount) + '</span>' +
+          '<span style="font-size:10px;font-weight:600;color:' + statusColor + '">' + statusLabel + '</span>' +
+          '</div></div>';
+      });
+      slotHtml += '</div>';
+    }
+
     pkgView.innerHTML = slotHtml;
   }
 
@@ -4512,6 +4558,22 @@ function dTab(idOrEl, target) {
   // Update tab buttons
   var tabs = document.querySelectorAll('#member-detail-modal .tab-btn');
   tabs.forEach(function(t) { t.classList.remove('active'); });
+}
+
+function saveMemberTrainer() {
+  if (!currMId) return;
+  var sel = document.getElementById('d-trainer-sel');
+  if (!sel) return;
+  var newTrainerId = sel.value;
+  for (var i = 0; i < members.length; i++) {
+    if (members[i].id === currMId) {
+      members[i].trainer = newTrainerId || null;
+      var trName = '';
+      for (var j = 0; j < trainers.length; j++) { if (trainers[j].id === newTrainerId) { trName = trainers[j].name; break; } }
+      toast(members[i].name + ' egitmeni ' + (trName || 'kaldirildi'));
+      break;
+    }
+  }
 }
 
 function manDeduct() {
@@ -5297,6 +5359,40 @@ function renderMemberLessons() {
       upEl.innerHTML = u;
     }
   }
+
+  // Attendance history
+  var ahEl = document.getElementById('ml-attendance-history');
+  if (ahEl) {
+    var myRes = reservations.filter(function(r) { return r.memberId === mem.id; })
+      .sort(function(a, b) { return b.date > a.date ? 1 : -1 });
+    if (myRes.length === 0) {
+      ahEl.innerHTML = '<p class="empty-state">Henuz yoklama kaydi bulunmuyor.</p>';
+    } else {
+      var present = myRes.filter(function(r) { return r.attendance === 'present'; }).length;
+      var absent = myRes.filter(function(r) { return r.attendance === 'absent'; }).length;
+      var rate = myRes.length > 0 ? Math.round((present / myRes.length) * 100) : 0;
+      var ahHtml = '<div style="display:flex;gap:12px;margin-bottom:12px">';
+      ahHtml += '<div style="flex:1;background:var(--g8);border-radius:8px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--g2)">' + present + '</div><div style="font-size:11px;color:var(--text3)">Katildi</div></div>';
+      ahHtml += '<div style="flex:1;background:rgba(244,67,54,.08);border-radius:8px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--red)">' + absent + '</div><div style="font-size:11px;color:var(--text3)">Gelmedi</div></div>';
+      ahHtml += '<div style="flex:1;background:var(--bg2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--g3)">' + rate + '%</div><div style="font-size:11px;color:var(--text3)">Devam Orani</div></div>';
+      ahHtml += '</div>';
+      var recent = myRes.slice(0, 10);
+      recent.forEach(function(r) {
+        var lp = null;
+        for (var li = 0; li < lessonPlans.length; li++) { if (lessonPlans[li].id === r.lessonPlanId) { lp = lessonPlans[li]; break; } }
+        var info = lp ? T[lp.type] : null;
+        var icon = r.attendance === 'present' ? '✓' : r.attendance === 'absent' ? '✗' : '·';
+        var iconColor = r.attendance === 'present' ? 'var(--g2)' : r.attendance === 'absent' ? 'var(--red)' : 'var(--text4)';
+        ahHtml += '<div class="lesson-row" style="gap:8px">' +
+          '<span style="font-size:16px;font-weight:800;color:' + iconColor + ';min-width:20px">' + icon + '</span>' +
+          '<span style="font-size:12px;color:var(--text3);min-width:85px">' + r.date + '</span>' +
+          (lp ? '<span class="lesson-badge ' + lp.type + '">' + (info ? info.label : lp.type) + '</span>' : '') +
+          '<span style="font-size:12px;color:var(--text4)">' + (lp ? lp.hour + ' - ' + lp.room : '') + '</span>' +
+          '</div>';
+      });
+      ahEl.innerHTML = ahHtml;
+    }
+  }
 }
 
 function setMemberCalView(v) {
@@ -5592,6 +5688,10 @@ function addMemberSave() {
   var pkgId    = (document.getElementById('nm-pkg')     || {}).value || '';
   var trainerId= (document.getElementById('nm-trainer') || {}).value || 't1';
   var health   = (document.getElementById('nm-health')  || {}).value || '';
+  var age      = parseInt((document.getElementById('nm-age')     || {}).value) || 0;
+  var weight   = parseFloat((document.getElementById('nm-weight') || {}).value) || 0;
+  var goal     = (document.getElementById('nm-goal')    || {}).value || '';
+  var posture  = (document.getElementById('nm-posture') || {}).value || '';
   var pass     = (document.getElementById('new-member-pass') || {}).value || '';
 
   var name = (first.trim() + ' ' + last.trim()).trim();
@@ -5628,15 +5728,26 @@ function addMemberSave() {
     end: end,
     trainer: trainerId,
     health: health.trim(),
+    age: age || null,
+    goal: goal.trim(),
+    posture: posture.trim(),
     notes: ''
   };
   members.push(newMember);
+
+  // Başlangıç ölçümü varsa measurements'a ekle
+  if (weight) {
+    var now = new Date();
+    var monthStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+    if (!measurements[newMember.id]) measurements[newMember.id] = [];
+    measurements[newMember.id].push({month: monthStr, kg: weight, bel:0, kalca:0, gogus:0, kol:0, bacak:0});
+  }
 
   if (pass) {
     accounts.push({email: email, pass: pass, role: 'member', trainerId: null, name: name});
   }
 
-  ['nm-first','nm-last','nm-email','nm-phone','nm-health','new-member-pass'].forEach(function(id){
+  ['nm-first','nm-last','nm-email','nm-phone','nm-health','nm-age','nm-weight','nm-goal','nm-posture','new-member-pass'].forEach(function(id){
     var el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -5762,9 +5873,10 @@ function renderTrainerDayLessons() {
     return a.hour.localeCompare(b.hour);
   });
 
-  var html = '<h3>' + dayToShow + ' Dersleri</h3>';
+  var today = new Date().toISOString().slice(0, 10);
+  var html = '';
   if (lessons.length === 0) {
-    html += '<p class="muted">Bu gun ders yok.</p>';
+    html = '<p class="muted" style="padding:1rem">Bu gun ders yok.</p>';
   } else {
     lessons.forEach(function(lp) {
       var info = T[lp.type];
@@ -5772,20 +5884,54 @@ function renderTrainerDayLessons() {
       for (var i = 0; i < trainers.length; i++) {
         if (trainers[i].id === lp.trainer) { trn = trainers[i]; break; }
       }
-      html += '<div class="lp-card" style="border-left:4px solid ' + (info ? info.color : 'var(--text4)') + '">' +
+      var activeRes = getLessonReservations(lp.id, today);
+      var memberRows = '';
+      activeRes.forEach(function(r) {
+        var mem = null;
+        for (var j = 0; j < members.length; j++) { if (members[j].id === r.memberId) { mem = members[j]; break; } }
+        if (!mem) return;
+        var attended = r.attendance === 'present';
+        var absent   = r.attendance === 'absent';
+        memberRows +=
+          '<div class="schedule-item" style="padding:.5rem .75rem;border-bottom:1px solid var(--border)">' +
+          '<div class="schedule-info" style="flex:1"><span>' + mem.name + '</span></div>' +
+          '<div class="schedule-actions">' +
+          '<button class="btn btn-sm ' + (attended ? 'btn-success' : 'btn-outline') + '" onclick="markRes(\'' + r.id + '\',\'' + lp.type + '\',\'present\')"' + (attended ? ' disabled' : '') + '>Katildi</button>' +
+          '<button class="btn btn-sm ' + (absent   ? 'btn-danger'  : 'btn-outline') + '" onclick="markRes(\'' + r.id + '\',\'' + lp.type + '\',\'absent\')"'  + (absent   ? ' disabled' : '') + '>Gelmedi</button>' +
+          '</div></div>';
+      });
+      if (!memberRows) {
+        memberRows = '<p class="muted" style="padding:.5rem .75rem;font-size:12px">Kayitli uye yok — manuel eklemek icin + Rezervasyon butonunu kullanin.</p>';
+      }
+      html += '<div class="lp-card" style="border-left:4px solid ' + (info ? info.color : 'var(--text4)') + ';margin-bottom:.75rem">' +
         '<div class="lp-header">' +
         '<span class="lp-time">' + lp.hour + '</span>' +
         '<span class="chip ' + (info ? info.chip : '') + '">' + (info ? info.label : lp.type) + '</span>' +
-        '<span class="lp-trainer" style="color:' + (trn ? trn.color : 'var(--text)') + '">' + (trn ? trn.name : '-') + '</span>' +
+        '<span class="lp-trainer">' + (trn ? trn.name : '-') + '</span>' +
+        '<span style="margin-left:auto;font-size:12px;color:var(--text3)">' + activeRes.length + '/' + lp.cap + ' kisi · ' + lp.room + '</span>' +
         '</div>' +
-        '<div class="lp-details">' +
-        '<span>' + lp.room + '</span>' +
-        '<span>' + lp.enrolled + '/' + lp.cap + ' kisi</span>' +
-        '<button class="btn-icon btn-danger-icon" onclick="removeLessonPlan(\'' + lp.id + '\')"><span class="material-icons">delete</span></button>' +
-        '</div></div>';
+        memberRows +
+        '</div>';
     });
   }
   container.innerHTML = html;
+}
+
+function markRes(resId, lessonType, action) {
+  var r = null;
+  for (var i = 0; i < reservations.length; i++) { if (reservations[i].id === resId) { r = reservations[i]; break; } }
+  if (!r) return;
+  if (r.attendance === action) return;
+  var mem = null;
+  for (var j = 0; j < members.length; j++) { if (members[j].id === r.memberId) { mem = members[j]; break; } }
+  if (action === 'present' && r.attendance !== 'present') {
+    if (mem && mem.slots[lessonType]) { mem.slots[lessonType].u = Math.min(mem.slots[lessonType].u + 1, mem.slots[lessonType].t); }
+  } else if (action === 'absent' && r.attendance === 'present') {
+    if (mem && mem.slots[lessonType] && mem.slots[lessonType].u > 0) { mem.slots[lessonType].u--; }
+  }
+  r.attendance = action;
+  renderTrainerDayLessons();
+  toast((mem ? mem.name : 'Uye') + ' — ' + (action === 'present' ? 'Katildi ✓' : 'Gelmedi'), action === 'present' ? 'success' : 'warning');
 }
 
 function removeLessonPlan(id) {
@@ -6252,6 +6398,25 @@ function getMemberDebt(id) {
 }
 
 // ── Payments ──
+
+function openLogPaymentModal() {
+  var sel = document.getElementById('pay-member');
+  if (sel) {
+    sel.innerHTML = '<option value="">Uye secin</option>';
+    var trainerMembers = currentRole === 'trainer'
+      ? members.filter(function(m) { return m.trainer === currentTrainerId; })
+      : members;
+    trainerMembers.forEach(function(m) {
+      var o = document.createElement('option');
+      o.value = m.id;
+      o.textContent = m.name;
+      sel.appendChild(o);
+    });
+  }
+  var dateEl = document.getElementById('pay-date');
+  if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().slice(0, 10);
+  openModal('log-payment-modal');
+}
 
 function savePayment() {
   var memberEl = document.getElementById('pay-member');
@@ -7373,43 +7538,44 @@ function renderMyPlan() {
 
 function renderMyPerf() {
   if (!currentTrainerId) return;
-  var container = document.getElementById('ey-my-perf-content');
-  if (!container) return;
-
   var tr = trainerById(currentTrainerId);
   if (!tr) return;
   tr.score = calcScore(tr);
 
-  var taskPct = tr.taskTotal > 0 ? Math.round(tr.taskDone / tr.taskTotal * 100) : 0;
-  var contPct = tr.contentGoal > 0 ? Math.round(tr.content / tr.contentGoal * 100) : 0;
-  var trialPct = tr.trialGoal > 0 ? Math.round(tr.trials / tr.trialGoal * 100) : 0;
-  var memPct = tr.memberGoal > 0 ? Math.round(tr.members / tr.memberGoal * 100) : 0;
+  // SVG ring
+  var ring = document.querySelector('#my-perf-ring circle:nth-child(2)');
+  var numEl = document.getElementById('my-perf-num');
+  if (ring) {
+    var circumference = 440;
+    var offset = circumference - (tr.score / 100) * circumference;
+    ring.style.strokeDashoffset = offset;
+    ring.style.stroke = scoreColor(tr.score);
+  }
+  if (numEl) numEl.textContent = tr.score;
 
-  var html = '<div class="perf-score-section">' +
-    '<div class="perf-score-circle ' + scoreClass(tr.score) + '" style="color:' + scoreColor(tr.score) + '"><span class="perf-score-num">' + tr.score + '</span><span class="perf-score-label">Genel Skor</span></div>' +
-    '</div>';
+  var container = document.getElementById('perf-detail-bars');
+  if (!container) return;
 
-  html += '<div class="perf-breakdown"><h3>Detayli Performans</h3>' +
-    '<div class="perf-bar-row"><span class="perf-bar-label">Gorevler (x0.40)</span><div class="progress-bar"><div class="progress-fill pf-g" style="width:' + taskPct + '%"></div></div><span>%' + taskPct + ' (' + tr.taskDone + '/' + tr.taskTotal + ')</span></div>' +
-    '<div class="perf-bar-row"><span class="perf-bar-label">Icerik (x0.25)</span><div class="progress-bar"><div class="progress-fill pf-b" style="width:' + contPct + '%"></div></div><span>%' + contPct + ' (' + tr.content + '/' + tr.contentGoal + ')</span></div>' +
-    '<div class="perf-bar-row"><span class="perf-bar-label">Deneme (x0.20)</span><div class="progress-bar"><div class="progress-fill pf-p" style="width:' + trialPct + '%"></div></div><span>%' + trialPct + ' (' + tr.trials + '/' + tr.trialGoal + ')</span></div>' +
-    '<div class="perf-bar-row"><span class="perf-bar-label">Uye (x0.15)</span><div class="progress-bar"><div class="progress-fill pf-a" style="width:' + memPct + '%"></div></div><span>%' + memPct + ' (' + tr.members + '/' + tr.memberGoal + ')</span></div>' +
-    '</div>';
+  var taskPct  = tr.taskTotal   > 0 ? Math.round(tr.taskDone / tr.taskTotal   * 100) : 0;
+  var contPct  = tr.contentGoal > 0 ? Math.round(tr.content  / tr.contentGoal * 100) : 0;
+  var trialPct = tr.trialGoal   > 0 ? Math.round(tr.trials   / tr.trialGoal   * 100) : 0;
+  var memPct   = tr.memberGoal  > 0 ? Math.round(tr.members  / tr.memberGoal  * 100) : 0;
 
-  // Comparison with others
-  html += '<div class="perf-compare"><h3>Egitmen Karsilastirmasi</h3>' +
-    '<div class="compare-bars">';
+  var html =
+    '<div class="perf-bar-row"><span class="perf-bar-label">Gorevler (x0.40)</span><div class="progress-bar"><div class="progress-fill pf-g" style="width:' + taskPct  + '%"></div></div><span>%' + taskPct  + ' (' + tr.taskDone + '/' + tr.taskTotal   + ')</span></div>' +
+    '<div class="perf-bar-row"><span class="perf-bar-label">Icerik  (x0.25)</span><div class="progress-bar"><div class="progress-fill pf-b" style="width:' + contPct  + '%"></div></div><span>%' + contPct  + ' (' + tr.content  + '/' + tr.contentGoal + ')</span></div>' +
+    '<div class="perf-bar-row"><span class="perf-bar-label">Deneme  (x0.20)</span><div class="progress-bar"><div class="progress-fill pf-p" style="width:' + trialPct + '%"></div></div><span>%' + trialPct + ' (' + tr.trials   + '/' + tr.trialGoal   + ')</span></div>' +
+    '<div class="perf-bar-row"><span class="perf-bar-label">Uye     (x0.15)</span><div class="progress-bar"><div class="progress-fill pf-a" style="width:' + memPct   + '%"></div></div><span>%' + memPct   + ' (' + tr.members  + '/' + tr.memberGoal  + ')</span></div>' +
+    '<div style="margin-top:1.25rem"><h3 style="margin-bottom:.75rem">Egitmen Karsilastirmasi</h3>';
   TRAINERS.forEach(function(other) {
     other.score = calcScore(other);
     var isMe = other.id === currentTrainerId;
-    html += '<div class="compare-row' + (isMe ? ' compare-me' : '') + '">' +
-      '<span style="color:' + other.color + '">' + other.name + '</span>' +
+    html += '<div class="perf-bar-row' + (isMe ? ' compare-me' : '') + '">' +
+      '<span style="color:' + other.color + ';min-width:110px">' + other.name + '</span>' +
       '<div class="progress-bar"><div class="progress-fill" style="width:' + other.score + '%;background:' + other.color + '"></div></div>' +
-      '<span class="' + scoreClass(other.score) + '">' + other.score + '</span>' +
-      '</div>';
+      '<span class="' + scoreClass(other.score) + '">' + other.score + '</span></div>';
   });
-  html += '</div></div>';
-
+  html += '</div>';
   container.innerHTML = html;
 }
 
@@ -8112,10 +8278,9 @@ function renderMeasurements() {
     mData.forEach(function(d) { if (d.kg < minKg) minKg = d.kg; if (d.kg > maxKg) maxKg = d.kg; });
     var range = maxKg - minKg || 1;
 
-    var cHtml = '<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Kilo Gecmisi</div>';
-    cHtml += '<div class="meas-chart-bar">';
+    var cHtml = '<div class="meas-chart-bar">';
     mData.forEach(function(d, di) {
-      var pct = ((d.kg - minKg) / range) * 60 + 20; // 20-80% range
+      var pct = ((d.kg - minKg) / range) * 60 + 20;
       var isActive = di === idx;
       var barColor = isActive ? 'var(--g5)' : 'var(--g8)';
       var mp = d.month.split('-');
@@ -8126,19 +8291,61 @@ function renderMeasurements() {
         '<span class="bar-label">' + lbl + '</span></div>';
     });
     cHtml += '</div>';
-
-    // Total progress
-    var first = mData[0];
-    var last = mData[mData.length - 1];
+    var first = mData[0]; var last = mData[mData.length - 1];
     var totalDiff = last.kg - first.kg;
     var totalClass = totalDiff < 0 ? 'down' : (totalDiff > 0 ? 'up' : 'same');
     cHtml += '<div style="margin-top:12px;text-align:center"><span class="meas-diff ' + totalClass + '" style="font-size:12px">' +
-      (totalDiff < 0 ? '↓ ' : totalDiff > 0 ? '↑ ' : '') +
-      Math.abs(totalDiff).toFixed(1) + ' kg toplam degisim</span></div>';
-
+      (totalDiff < 0 ? '↓ ' : totalDiff > 0 ? '↑ ' : '') + Math.abs(totalDiff).toFixed(1) + ' kg toplam degisim</span></div>';
     chartEl.innerHTML = cHtml;
   } else if (chartEl) {
     chartEl.innerHTML = '';
+  }
+
+  // Circumference trend chart
+  var circEl = document.getElementById('mp-circ-chart');
+  if (circEl) {
+    if (mData.length < 2) { circEl.innerHTML = '<p class="empty-state">Trend icin en az 2 ay olcum gerekli.</p>'; }
+    else {
+      var circFields = [
+        {key:'bel', label:'Bel', color:'var(--blue)'},
+        {key:'kalca', label:'Kalca', color:'var(--purple)'},
+        {key:'gogus', label:'Gogus', color:'var(--amber)'},
+        {key:'kol', label:'Kol', color:'var(--teal)'},
+        {key:'bacak', label:'Bacak', color:'var(--g2)'}
+      ];
+      var cfHtml = '';
+      circFields.forEach(function(cf) {
+        var vals = mData.map(function(d) { return d[cf.key] || 0; });
+        var minV = Math.min.apply(null, vals);
+        var maxV = Math.max.apply(null, vals);
+        var rng = maxV - minV || 1;
+        var firstV = vals[0]; var lastV = vals[vals.length - 1];
+        var diff = lastV - firstV;
+        var diffStr = diff === 0 ? '→ Ayni' : (diff < 0 ? '↓ ' + Math.abs(diff).toFixed(1) + ' cm' : '↑ ' + diff.toFixed(1) + ' cm');
+        var diffClass = diff < 0 ? 'down' : (diff > 0 ? 'up' : 'same');
+
+        cfHtml += '<div style="margin-bottom:16px">';
+        cfHtml += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+        cfHtml += '<span style="font-size:12px;font-weight:700;color:' + cf.color + '">' + cf.label + '</span>';
+        cfHtml += '<span class="meas-diff ' + diffClass + '" style="font-size:11px">' + diffStr + '</span>';
+        cfHtml += '</div>';
+        cfHtml += '<div style="display:flex;gap:4px;align-items:flex-end;height:48px">';
+        mData.forEach(function(d, di) {
+          var v = d[cf.key] || 0;
+          var pct = ((v - minV) / rng) * 60 + 20;
+          var isActive = di === idx;
+          var mp2 = d.month.split('-');
+          var lbl2 = aylar[parseInt(mp2[1]) - 1].substring(0, 3);
+          cfHtml += '<div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:2px">';
+          cfHtml += '<span style="font-size:9px;color:' + (isActive ? cf.color : 'var(--text4)') + ';font-weight:' + (isActive ? '700' : '400') + '">' + v + '</span>';
+          cfHtml += '<div style="width:100%;border-radius:3px 3px 0 0;height:' + pct + '%;background:' + (isActive ? cf.color : 'var(--bg3,#e8f5e9)') + ';opacity:' + (isActive ? '1' : '0.5') + ';min-height:4px"></div>';
+          cfHtml += '<span style="font-size:9px;color:var(--text4)">' + lbl2 + '</span>';
+          cfHtml += '</div>';
+        });
+        cfHtml += '</div></div>';
+      });
+      circEl.innerHTML = cfHtml;
+    }
   }
 }
 
