@@ -1357,10 +1357,10 @@ function doLogout(){
   document.getElementById('adminPage').classList.remove('active');
   document.getElementById('loginPage').style.display='flex';
   mode='login';
-  document.getElementById('lsub').textContent='Admin paneline giriş yapın';
+  document.getElementById('loginSub').textContent='Admin paneline giriş yapın';
   document.getElementById('mainBtn').textContent='Giriş Yap';
   if(document.getElementById('forgotBtn'))document.getElementById('forgotBtn').style.display='';
-  if(document.getElementById('modeBtn'))document.getElementById('modeBtn').textContent='Hesabınız yok mu? Kayıt olun';
+  if(document.getElementById('modeBtn'))document.getElementById('modeBtn').textContent='Hesap oluşturun →';
   if(document.getElementById('pwf'))document.getElementById('pwf').style.display='';
 }
 function toggleMode(){
@@ -1368,7 +1368,7 @@ function toggleMode(){
   mode=mode==='login'?'signup':'login';
   var s=mode==='signup';
   document.getElementById('loginTitle').textContent=s?'Hesap Oluştur':'Yönetici Girişi';
-  document.getElementById('lsub').textContent=s?'Yeni hesap talep edin':'Admin paneline giriş yapın';
+  document.getElementById('loginSub').textContent=s?'Yeni hesap talep edin':'Admin paneline giriş yapın';
   document.getElementById('mainBtn').textContent=s?'Hesap Oluştur':'Giriş Yap';
   document.getElementById('modeBtn').textContent=s?'← Giriş yapın':'Hesap oluşturun →';
   document.getElementById('forgotBtn').style.display=s?'none':'';
@@ -1378,7 +1378,7 @@ function toggleMode(){
 }
 function showForgot(){
   mode='forgot';
-  document.getElementById('lsub').textContent='Şifre sıfırlama';
+  document.getElementById('loginSub').textContent='Şifre sıfırlama';
   document.getElementById('mainBtn').textContent='Sıfırlama Bağlantısı Gönder';
   document.getElementById('pwf').style.display='none';
   document.getElementById('forgotBtn').style.display='none';
@@ -1387,7 +1387,7 @@ function showForgot(){
 function showLogin(){
   mode='login';
   document.getElementById('loginTitle').textContent='Yönetici Girişi';
-  document.getElementById('lsub').textContent='Admin paneline giriş yapın';
+  document.getElementById('loginSub').textContent='Admin paneline giriş yapın';
   document.getElementById('mainBtn').textContent='Giriş Yap';
   document.getElementById('pwf').style.display='';
   document.getElementById('forgotBtn').style.display='';
