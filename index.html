@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8"/>
@@ -568,6 +568,30 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
   .svc-card,.rev-card,.contact-card,.marquee-item{transform:none!important}
 }
 
+
+/* Online Dersler */
+#online{padding:5rem 0;background:var(--white)}
+.online-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin:3rem 0}
+.online-card{background:var(--cream);border-radius:var(--radius);padding:2rem 1.5rem;border:1px solid var(--border);transition:all .25s;text-align:center;box-shadow:var(--shadow)}
+.online-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.online-icon{font-size:2.5rem;margin-bottom:1rem}
+.online-card h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:.75rem;color:var(--text)}
+.online-card p{font-size:.9rem;color:var(--muted);line-height:1.6}
+.online-how{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;margin-top:4rem;padding:3rem;background:var(--cream);border-radius:1.5rem}
+.online-steps{display:flex;flex-direction:column;gap:1.5rem;margin-top:1.5rem}
+.online-step{display:flex;align-items:flex-start;gap:1rem}
+.online-step-num{flex-shrink:0;width:40px;height:40px;border-radius:50%;background:var(--green);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem}
+.online-step strong{display:block;font-weight:700;margin-bottom:.25rem;color:var(--text);font-family:'Outfit',sans-serif}
+.online-step p{font-size:.9rem;color:var(--muted);margin:0}
+.online-cta-card{background:var(--green);border-radius:1.5rem;padding:2.5rem;color:white;text-align:center;box-shadow:var(--shadow-green)}
+.online-cta-icon{font-size:3rem;margin-bottom:1rem}
+.online-cta-card h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:1.5rem;color:white}
+.online-features{list-style:none;text-align:left;margin-bottom:2rem;display:flex;flex-direction:column;gap:.6rem}
+.online-features li{font-size:.9rem;color:rgba(255,255,255,.9);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.online-features li:last-child{border:none}
+.online-note{font-size:.8rem;color:rgba(255,255,255,.6);margin-top:.75rem}
+@media(max-width:900px){.online-grid{grid-template-columns:repeat(2,1fr)}.online-how{grid-template-columns:1fr;gap:2rem;padding:2rem}}
+@media(max-width:600px){.online-grid{grid-template-columns:1fr}}
 /* ── Mobile Performance ── */
 @media(max-width:900px){
   :root{--tilt-max:0deg;--perspective:none}
@@ -590,6 +614,8 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
         <a href="javascript:void(0)" onclick="goTo('services')">Hizmetler</a>
         <div class="drop-menu"><p class="drop-menu-lbl">Branşlarımız</p><div id="dropSvcLinks"></div></div>
       </div>
+      <a href="javascript:void(0)" onclick="goTo('online')">Online Dersler</a>
+      <a href="javascript:void(0)" onclick="goTo('online')">Online Dersler</a>
       <a href="javascript:void(0)" onclick="goTo('how-it-works')">Nasıl Çalışıyoruz</a>
       <a href="javascript:void(0)" onclick="goTo('contact')">İletişim</a>
     </nav>
@@ -604,6 +630,8 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
     <a href="javascript:void(0)" onclick="closeMenu();goTo('hero')">Ana Sayfa</a>
     <a href="javascript:void(0)" onclick="closeMenu();goTo('services')">Hizmetler</a>
     <div class="sub-lnks" id="mobSvcLinks"></div>
+    <a href="javascript:void(0)" onclick="closeMenu();goTo('online')">Online Dersler</a>
+    <a href="javascript:void(0)" onclick="closeMenu();goTo('online')">Online Dersler</a>
     <a href="javascript:void(0)" onclick="closeMenu();goTo('how-it-works')">Nasıl Çalışıyoruz</a>
     <a href="javascript:void(0)" onclick="closeMenu();goTo('contact')">İletişim</a>
     <div class="nav-m-cta"><button class="btn-mob-cta" onclick="closeMenu();openRandevu()">📞 Ücretsiz Randevu Al</button></div>
@@ -655,6 +683,68 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
   <div class="gal-more"><a href="https://www.instagram.com/metaacademypilates" target="_blank" rel="noopener noreferrer">Daha fazlası için Instagram sayfamızı ziyaret edin →</a></div>
 </section>
 
+<section id="online"><div class="container">
+  <div class="sec-hdr">
+    <span class="sec-badge">Online Dersler</span>
+    <h2 class="sec-title">Nerede Olursanız Olun <span class="accent">Bizimle Hareket Edin</span></h2>
+    <p class="sec-sub" style="margin:0 auto">Stüdyo kalitesinde pilates ve egzersiz deneyimini evinizin konforunda yaşayın. Canlı ve kayıtlı derslerle tamamen esnek bir program.</p>
+  </div>
+  <div class="online-grid">
+    <div class="online-card">
+      <div class="online-icon">📹</div>
+      <h3>Canlı Dersler</h3>
+      <p>Birebir veya grup olarak gerçek zamanlı dersler. Eğitmeninizden anında geri bildirim alın.</p>
+    </div>
+    <div class="online-card">
+      <div class="online-icon">🎥</div>
+      <h3>Kayıtlı Kütüphane</h3>
+      <p>İstediğiniz zaman erişebileceğiniz ders arşivi. Kendi hızınızda, istediğiniz yerde ilerleyin.</p>
+    </div>
+    <div class="online-card">
+      <div class="online-icon">📅</div>
+      <h3>Esnek Program</h3>
+      <p>Size uygun saatlerde ders planlayın. 07:00 – 21:00 arası müsait eğitmenlerimizden seçin.</p>
+    </div>
+    <div class="online-card">
+      <div class="online-icon">🎯</div>
+      <h3>Kişiselleştirilmiş Plan</h3>
+      <p>Online olsa da programınız size özel. Haftalık ilerleme takibi ve düzenli program güncellemeleri.</p>
+    </div>
+  </div>
+  <div class="online-how">
+    <div>
+      <span class="sec-badge">Nasıl Başlarım?</span>
+      <h3 class="sec-title">3 Adımda <span class="accent">Online Derse Başla</span></h3>
+      <div class="online-steps">
+        <div class="online-step">
+          <div class="online-step-num">1</div>
+          <div><strong>Ön Görüşme</strong><p>Video görüşme ile hedeflerinizi ve mevcut durumunuzu değerlendiriyoruz.</p></div>
+        </div>
+        <div class="online-step">
+          <div class="online-step-num">2</div>
+          <div><strong>Program Tasarımı</strong><p>Size özel online ders programı ve gerekli ekipman listesi hazırlanır.</p></div>
+        </div>
+        <div class="online-step">
+          <div class="online-step-num">3</div>
+          <div><strong>Derse Başla</strong><p>Zoom veya Google Meet üzerinden eğitmeninizle buluşun. Kaydı alın, tekrar izleyin.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="online-cta-card">
+      <div class="online-cta-icon">🌐</div>
+      <h3>Online Ders Paketi</h3>
+      <ul class="online-features">
+        <li>✓ Canlı birebir veya grup ders</li>
+        <li>✓ Ders kaydı erişimi</li>
+        <li>✓ Haftalık ilerleme raporu</li>
+        <li>✓ WhatsApp destek hattı</li>
+        <li>✓ Kişisel egzersiz programı</li>
+      </ul>
+      <button class="btn btn-cream" onclick="openRandevu()" style="width:100%;justify-content:center">Ücretsiz Deneme Dersi Al</button>
+      <p class="online-note">İlk ders ücretsiz · Ekipman gerekmez</p>
+    </div>
+  </div>
+</div></section>
 <section id="how-it-works"><div class="container">
   <div class="proc-hyg-inner">
     <div class="proc-side proc-side-left">
@@ -711,7 +801,9 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
           <a href="#" class="social-link">▶</a>
         </div>
       </div>
-      <div class="ft-col"><h4>Hızlı Linkler</h4><ul class="ft-links"><li><a href="javascript:void(0)" onclick="goTo('hero')">Ana Sayfa</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">Hizmetler</a></li><li><a href="javascript:void(0)" onclick="goTo('how-it-works')">Nasıl Çalışıyoruz</a></li><li><a href="javascript:void(0)" onclick="goTo('contact')">İletişim</a></li></ul></div>
+      <div class="ft-col"><h4>Hızlı Linkler</h4><ul class="ft-links"><li><a href="javascript:void(0)" onclick="goTo('hero')">Ana Sayfa</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">Hizmetler</a></li><li><a href="javascript:void(0)" onclick="goTo('online')">Online Dersler</a>
+      <a href="javascript:void(0)" onclick="goTo('online')">Online Dersler</a>
+      <a href="javascript:void(0)" onclick="goTo('how-it-works')">Nasıl Çalışıyoruz</a></li><li><a href="javascript:void(0)" onclick="goTo('contact')">İletişim</a></li></ul></div>
       <div class="ft-col"><h4>Hizmetlerimiz</h4><ul class="ft-links"><li><a href="javascript:void(0)" onclick="goTo('services')">Pilates</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">Atletik Performans</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">Postürel Egzersizler</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">EMS</a></li></ul></div>
       <div class="ft-col" id="footerContact"></div>
     </div>
