@@ -396,6 +396,10 @@ img{max-width:100%;display:block}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
           Online Dersler
         </button>
+        <button class="nav-item" onclick="sw('blog',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Blog
+        </button>
         <button class="nav-item" onclick="sw('hiw',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
           Nasıl Çalışıyoruz
@@ -1080,6 +1084,65 @@ img{max-width:100%;display:block}
     </div>
 
     <!-- ── ÖNİZLEME ── -->
+
+    <div class="panel" id="p-blog">
+      <div id="blogListView">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+          <div style="font-size:.85rem;color:var(--muted-fg)" id="blogCountLbl">Yükleniyor...</div>
+          <button class="save-btn" onclick="showBlogEditor(null)" style="padding:.55rem 1.25rem;font-size:.82rem">+ Yeni Yazı</button>
+        </div>
+        <div id="blogPostList" style="display:flex;flex-direction:column;gap:.75rem"></div>
+      </div>
+      <div id="blogEditorView" style="display:none">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem">
+          <button onclick="hideBlogEditor()" style="background:none;border:1.5px solid var(--border);border-radius:.5rem;padding:.4rem .9rem;font-size:.8rem;cursor:pointer;color:var(--muted-fg)">← Geri</button>
+          <h3 style="font-size:1rem;font-weight:700" id="blogEditorTitle">Yeni Yazı</h3>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+          <div class="fm-row" style="grid-column:1/-1">
+            <label class="fm-label">Başlık *</label>
+            <input class="fm-val" type="text" id="be-title" placeholder="Yazı başlığı">
+          </div>
+          <div class="fm-row">
+            <label class="fm-label">Kategori</label>
+            <select class="fm-val" id="be-category">
+              <option value="Pilates">Pilates</option>
+              <option value="EMS">EMS</option>
+              <option value="Postür">Postür</option>
+              <option value="Atletik">Atletik</option>
+              <option value="Genel">Genel</option>
+            </select>
+          </div>
+          <div class="fm-row">
+            <label class="fm-label">Tarih</label>
+            <input class="fm-val" type="date" id="be-date">
+          </div>
+          <div class="fm-row" style="grid-column:1/-1">
+            <label class="fm-label">Kapak Görseli URL</label>
+            <input class="fm-val" type="text" id="be-img" placeholder="https://...">
+          </div>
+          <div class="fm-row" style="grid-column:1/-1">
+            <label class="fm-label">Özet (Kart görünümü)</label>
+            <textarea class="fm-val" id="be-excerpt" rows="3" style="resize:vertical;font-family:inherit;font-size:.875rem" placeholder="Kısa özet metin..."></textarea>
+          </div>
+          <div class="fm-row" style="grid-column:1/-1">
+            <label class="fm-label">İçerik (Tam yazı)</label>
+            <textarea class="fm-val" id="be-content" rows="12" style="resize:vertical;font-family:inherit;font-size:.875rem;line-height:1.6" placeholder="Yazının tam içeriği..."></textarea>
+          </div>
+          <div class="fm-row" style="grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--muted);border-radius:.5rem">
+            <span style="font-size:.875rem;font-weight:600">Yayın Durumu</span>
+            <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer">
+              <input type="checkbox" id="be-visible" checked style="width:18px;height:18px;accent-color:var(--primary)">
+              <span id="be-visible-lbl" style="font-size:.875rem;font-weight:600;color:var(--primary)">Yayında</span>
+            </label>
+          </div>
+        </div>
+        <div style="display:flex;gap:.75rem;margin-top:1rem">
+          <button class="save-btn" onclick="saveBlogPost()" style="flex:1">Kaydet & Yayınla</button>
+          <button id="be-delete-btn" onclick="deleteBlogPost()" style="padding:.65rem 1.25rem;border-radius:.55rem;background:var(--destructive);color:#fff;font-weight:700;font-size:.82rem;border:none;cursor:pointer;display:none">Sil</button>
+        </div>
+      </div>
+    </div>
     <div class="panel" id="p-preview">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
         <div style="font-size:1rem;font-weight:700">Site Önizleme</div>
@@ -1124,6 +1187,7 @@ const PAGE_HEADERS = {
   users:{title:'Kullanıcı Yönetimi', sub:'Hesap taleplerini onaylayın veya reddedin'},
   style:{title:'Stil & Tasarım', sub:'Site renklerini ve fontları özelleştirin'},
   preview:{title:'Site Önizleme', sub:'Değişiklikleri canlı görün'},
+  blog:{title:'Blog Yönetimi', sub:'Yazıları oluşturun, düzenleyin ve yayınlayın'},
 };
 
 // ── PANEL SWITCH ──
@@ -1151,6 +1215,7 @@ function sw(name, btn){
   if(name === 'gal' && typeof renderGal === 'function') renderGal();
   if(name === 'quiz' && typeof renderQuiz === 'function') renderQuiz();
   if(name === 'online' && typeof renderOnlinePanel === 'function') renderOnlinePanel();
+  if(name === 'blog' && typeof renderBlogPanel === 'function') renderBlogPanel();
 
   if(name === 'preview'){
     setTimeout(() => {
@@ -1232,7 +1297,7 @@ function startMiniCanvas(){
 
 
 // ═══ STORAGE ═══
-const K={hero:'ma_hero',svc:'ma_svc',svc_meta:'ma_svc_meta',hiw:'ma_hiw',hyg:'ma_hyg',gal:'ma_gal',rev:'ma_rev',con:'ma_con',st:'ma_st',appt:'ma_appt',online:'ma_online'};
+const K={hero:'ma_hero',svc:'ma_svc',svc_meta:'ma_svc_meta',hiw:'ma_hiw',hyg:'ma_hyg',gal:'ma_gal',rev:'ma_rev',con:'ma_con',st:'ma_st',appt:'ma_appt',online:'ma_online',blog:'ma_blog'};
 const ld=k=>{try{const d=localStorage.getItem(K[k]);return d?JSON.parse(d):null}catch{return null}};
 const sv=(k,d)=>localStorage.setItem(K[k],JSON.stringify(d));
 
@@ -2737,6 +2802,92 @@ function saveOnlinePanel(){
   sv('online',d);
   toast('✅ Online bölümü kaydedildi');
 }
+
+// ── BLOG ──
+var _blogEditId = null;
+var DEF_BLOG = [
+  {id:'b1',title:'Reformer Pilates Nedir? Faydaları ve Kimler Yapabilir?',category:'Pilates',date:'2025-01-15',img:'https://lh3.googleusercontent.com/p/AF1QipNhcy5Zleka8z2eGhk76kQlsZGFj15p0IgpMk2k=w800-h600-k-no',excerpt:'Reformer pilates, yaylı direnç sistemiyle çalışan özel bir alet üzerinde yapılan, core güçlendirme ve esnekliği artıran etkili bir egzersiz yöntemidir.',content:'Reformer pilates, Joseph Pilates tarafından geliştirilen bir egzersiz yöntemidir.\n\nReformer cihazı, kaydıran platform, yaylar, ipler ve kol askılarından oluşur.\n\nKimler Yapabilir?\nHer yaştan ve fitness seviyesinden kişi yapabilir. Başlangıçtan ileri seviyeye farklı zorluklar mevcuttur.\n\nFaydaları:\n• Core kaslarını güçlendirir\n• Postürü düzeltir\n• Esnekliği artırır\n• Stres azaltır',visible:true},
+  {id:'b2',title:'EMS Antrenmanı: 20 Dakikada 2 Saatlik Etki',category:'EMS',date:'2025-01-22',img:'https://lh3.googleusercontent.com/p/AF1QipOZxygZrEOuxqv8wkDv1cD3z1wJkFl1DqMgAxpW=w800-h600-k-no',excerpt:'EMS teknolojisi ile 20 dakikalık bir seans, saatler süren geleneksel antrenmanlarla aynı kas aktivasyonunu sağlar.',content:'EMS (Elektro Kas Stimülasyonu) teknolojisi, düşük frekanslı elektrik akımları ile kas gruplarını aktive eder.\n\nSonuçlar:\n• Kısa sürede kas güçlenmesi\n• Metabolizma hızlanması\n• Selülit azalması\n• Bölgesel incelme\n\nHaftada 1 seans, 20 dakika ile görünür sonuçlar elde edebilirsiniz.',visible:true},
+  {id:'b3',title:'Masa Başı Çalışanlar İçin 5 Temel Postür Egzersizi',category:'Postür',date:'2025-02-05',img:'https://lh3.googleusercontent.com/p/AF1QipMzz3RptKbd6PufQrrcCtOJUIdGr5T4q8J6CmrX=w800-h600-k-no',excerpt:'Günde 8+ saat bilgisayar başında geçiriyorsanız, boyun ve sırt ağrılarından kurtulmanızı sağlayacak 5 temel postür egzersizini keşfedin.',content:'Masa başında uzun saatler geçirmek, öne çıkmış baş, yuvarlak omuzlar ve bel ağrısına yol açabilir.\n\n1. Boyun Germe\n2. Omuz Açma\n3. Göğüs Açıcı\n4. Hip Flexor Germe\n5. Cat-Cow Hareketi\n\nBu egzersizleri sabah ve öğleden sonra birer set yapmanız yeterlidir.',visible:true}
+];
+function getBlogPosts(){
+  try{var d=localStorage.getItem('ma_blog');return d?JSON.parse(d):JSON.parse(JSON.stringify(DEF_BLOG));}catch{return JSON.parse(JSON.stringify(DEF_BLOG));}
+}
+function saveBlogPosts(posts){localStorage.setItem('ma_blog',JSON.stringify(posts));}
+function renderBlogPanel(){
+  _blogEditId=null;
+  document.getElementById('blogListView').style.display='';
+  document.getElementById('blogEditorView').style.display='none';
+  var posts=getBlogPosts();
+  var lbl=document.getElementById('blogCountLbl');
+  if(lbl) lbl.textContent=posts.length+' yazı · '+posts.filter(function(p){return p.visible;}).length+' yayında';
+  var list=document.getElementById('blogPostList');
+  if(!list)return;
+  if(!posts.length){list.innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted-fg);font-size:.875rem">Henüz yazı yok. Yeni yazı ekleyin.</div>';return;}
+  list.innerHTML=posts.map(function(p,idx){
+    var d=new Date(p.date);
+    var ds=isNaN(d)?p.date:d.toLocaleDateString('tr-TR',{day:'numeric',month:'short',year:'numeric'});
+    return '<div style="display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;background:var(--card);border:1.5px solid var(--border);border-radius:.65rem;cursor:pointer" onclick="showBlogEditor(\''+p.id+'\')"> '
+      +(p.img?'<img src="'+p.img+'" style="width:56px;height:44px;object-fit:cover;border-radius:.4rem;flex-shrink:0">':'<div style="width:56px;height:44px;background:var(--muted);border-radius:.4rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem">📝</div>')
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-weight:700;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.title+'</div>'
+        +'<div style="font-size:.75rem;color:var(--muted-fg);margin-top:.2rem">'+p.category+' · '+ds+'</div>'
+      +'</div>'
+      +'<span style="font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:999px;'+(p.visible?'background:rgba(28,107,35,.12);color:var(--primary)':'background:rgba(0,0,0,.07);color:var(--muted-fg)')+'">'+( p.visible?'Yayında':'Taslak')+'</span>'
+      +'<svg style="width:16px;height:16px;flex-shrink:0;color:var(--muted-fg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>'
+      +'</div>';
+  }).join('');
+}
+function showBlogEditor(id){
+  _blogEditId=id;
+  var posts=getBlogPosts();
+  var p=id?posts.find(function(x){return x.id===id;}):null;
+  document.getElementById('blogEditorTitle').textContent=p?'Yazıyı Düzenle':'Yeni Yazı';
+  document.getElementById('be-title').value=p?p.title:'';
+  document.getElementById('be-category').value=p?p.category:'Pilates';
+  document.getElementById('be-date').value=p?p.date:new Date().toISOString().split('T')[0];
+  document.getElementById('be-img').value=p?p.img:'';
+  document.getElementById('be-excerpt').value=p?p.excerpt:'';
+  document.getElementById('be-content').value=p?p.content:'';
+  document.getElementById('be-visible').checked=p?p.visible!==false:true;
+  document.getElementById('be-visible-lbl').textContent=p&&p.visible===false?'Taslak':'Yayında';
+  document.getElementById('be-delete-btn').style.display=id?'':'none';
+  document.getElementById('blogListView').style.display='none';
+  document.getElementById('blogEditorView').style.display='';
+  document.getElementById('be-visible').onchange=function(){
+    document.getElementById('be-visible-lbl').textContent=this.checked?'Yayında':'Taslak';
+  };
+}
+function hideBlogEditor(){renderBlogPanel();}
+function saveBlogPost(){
+  var title=document.getElementById('be-title').value.trim();
+  if(!title){toast('Başlık zorunlu','e');return;}
+  var posts=getBlogPosts();
+  var isNew=!_blogEditId;
+  var post={
+    id:_blogEditId||('b'+Date.now()),
+    title:title,
+    category:document.getElementById('be-category').value,
+    date:document.getElementById('be-date').value,
+    img:document.getElementById('be-img').value.trim(),
+    excerpt:document.getElementById('be-excerpt').value.trim(),
+    content:document.getElementById('be-content').value.trim(),
+    visible:document.getElementById('be-visible').checked
+  };
+  if(isNew){posts.unshift(post);}
+  else{var idx=posts.findIndex(function(p){return p.id===_blogEditId;});if(idx>=0)posts[idx]=post;else posts.unshift(post);}
+  saveBlogPosts(posts);
+  toast(isNew?'✅ Yazı eklendi':'✅ Yazı güncellendi');
+  renderBlogPanel();
+}
+function deleteBlogPost(){
+  if(!_blogEditId)return;
+  if(!confirm('Bu yazı silinecek. Emin misiniz?'))return;
+  var posts=getBlogPosts().filter(function(p){return p.id!==_blogEditId;});
+  saveBlogPosts(posts);
+  toast('Yazı silindi');
+  renderBlogPanel();
+}
 // ── SECTION ORDER (drag-drop) ──
 const SVC_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZm90cnhydWxvdHZvYm9lZXd2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjExMTYyOCwiZXhwIjoyMDkxNjg3NjI4fQ.Xv8Dbe4hhf9CWk6TfLTWm5tW8HI5suRPJu47TRMOF0k';
 const SECTION_DEF=[
@@ -2744,7 +2895,8 @@ const SECTION_DEF=[
   {id:'online',label:'Online Dersler'},
   {id:'gallery',label:'Galeri'},
   {id:'how-it-works',label:'Nasıl Çalışıyoruz'},
-  {id:'reviews',label:'Yorumlar'}
+  {id:'reviews',label:'Yorumlar'},
+  {id:'blog',label:'Blog'}
 ];
 function renderOrder(ord){
   const ul=document.getElementById('orderList');if(!ul)return;

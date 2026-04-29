@@ -612,6 +612,38 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
 .online-note{font-size:.78rem;color:rgba(255,255,255,.55);margin-top:.75rem}
 @media(max-width:900px){.online-grid{grid-template-columns:repeat(2,1fr)}.online-how{grid-template-columns:1fr;gap:2rem;padding:2rem}}
 @media(max-width:600px){.online-grid{grid-template-columns:1fr}}
+/* ── Blog ── */
+#blog{padding:5.5rem 0;background:var(--white)}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem;margin-top:3rem}
+.blog-card{background:#fff;border-radius:1.1rem;overflow:hidden;border:1.5px solid var(--border);box-shadow:0 2px 12px rgba(28,107,35,.05);transition:all .3s;display:flex;flex-direction:column}
+.blog-card:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(28,107,35,.12);border-color:rgba(28,107,35,.2)}
+.blog-card-img{width:100%;height:200px;object-fit:cover;display:block}
+.blog-card-img-empty{width:100%;height:200px;background:linear-gradient(135deg,var(--green-light),rgba(28,107,35,.06));display:flex;align-items:center;justify-content:center;font-size:2.5rem}
+.blog-card-body{padding:1.5rem;flex:1;display:flex;flex-direction:column}
+.blog-card-meta{display:flex;align-items:center;gap:.6rem;margin-bottom:.85rem}
+.blog-card-cat{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--green);padding:.25rem .65rem;border-radius:999px}
+.blog-card-date{font-size:.78rem;color:var(--muted)}
+.blog-card-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--text);line-height:1.25;margin-bottom:.65rem}
+.blog-card-excerpt{font-size:.875rem;color:var(--muted);line-height:1.65;flex:1;margin-bottom:1.25rem}
+.blog-card-btn{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;font-weight:700;color:var(--green);border:1.5px solid var(--green);border-radius:999px;padding:.4rem 1rem;transition:all .2s;background:none;cursor:pointer;font-family:'Outfit',sans-serif;align-self:flex-start}
+.blog-card-btn:hover{background:var(--green);color:#fff}
+/* Blog modal */
+.blog-modal-ov{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:1rem}
+.blog-modal-ov.hidden{display:none}
+.blog-modal{background:#fff;border-radius:1.5rem;width:100%;max-width:720px;max-height:90vh;overflow-y:auto;animation:scaleIn .3s ease forwards;box-shadow:0 32px 80px rgba(0,0,0,.25)}
+.blog-modal-img{width:100%;height:260px;object-fit:cover;border-radius:1.5rem 1.5rem 0 0}
+.blog-modal-body{padding:2.5rem}
+.blog-modal-meta{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem}
+.blog-modal-cat{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--green);padding:.3rem .8rem;border-radius:999px}
+.blog-modal-date{font-size:.82rem;color:var(--muted)}
+.blog-modal-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;color:var(--text);line-height:1.2;margin-bottom:1rem}
+.blog-modal-content{font-size:.95rem;color:var(--text);line-height:1.85;white-space:pre-wrap}
+.blog-modal-close{position:absolute;top:1rem;right:1rem;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.9);border:none;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.blog-modal-wrap{position:relative}
+.blog-cta{margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center}
+.blog-empty{text-align:center;padding:3rem;color:var(--muted);font-size:.95rem}
+@media(max-width:900px){.blog-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.blog-grid{grid-template-columns:1fr}.blog-modal-body{padding:1.5rem}.blog-modal-img{height:180px}}
 /* ── Mobile Performance ── */
 @media(max-width:900px){
   :root{--tilt-max:0deg;--perspective:none}
@@ -635,6 +667,7 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
         <div class="drop-menu"><p class="drop-menu-lbl">Branşlarımız</p><div id="dropSvcLinks"></div><div style="border-top:1px solid var(--border);margin:.4rem .25rem"></div><a href="javascript:void(0)" onclick="goTo('online')" style="display:block;padding:.5rem .75rem;border-radius:.6rem;font-size:.88rem;font-weight:600;color:var(--green)">🌐 Online Dersler</a></div>
       </div>
       <a href="javascript:void(0)" onclick="goTo('how-it-works')">Nasıl Çalışıyoruz</a>
+      <a href="javascript:void(0)" onclick="goTo('blog')">Blog</a>
       <a href="javascript:void(0)" onclick="goTo('contact')">İletişim</a>
     </nav>
     <div class="hdr-cta">
@@ -651,6 +684,7 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
     <div class="sub-lnks" id="mobSvcLinks"></div>
     <a href="javascript:void(0)" onclick="closeMenu();goTo('online')" class="sub-lnks" style="display:block;padding:.55rem 1rem 0.55rem 2rem;font-size:.78rem;font-weight:600;letter-spacing:.06em;color:rgba(255,255,255,.6)">🌐 Online Dersler</a>
     <a href="javascript:void(0)" onclick="closeMenu();goTo('how-it-works')">Nasıl Çalışıyoruz</a>
+    <a href="javascript:void(0)" onclick="closeMenu();goTo('blog')">Blog</a>
     <a href="javascript:void(0)" onclick="closeMenu();goTo('contact')">İletişim</a>
     <div class="nav-m-cta"><button class="btn-mob-cta" onclick="closeMenu();openRandevu()">📞 Ücretsiz Randevu Al</button></div>
   </nav>
@@ -729,6 +763,15 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
   <div class="rev-wrap" id="revWrap"></div>
 </div></section>
 
+<section id="blog"><div class="container">
+  <div class="sec-hdr">
+    <span class="sec-badge">Blog</span>
+    <h2 class="sec-title">Uzman <span class="accent">İçerikler & Tavsiyeler</span></h2>
+    <p class="sec-sub" style="margin:0 auto">Pilates, EMS ve hareket sağlığı hakkında eğitmenlerimizin kaleme aldığı rehber içerikler.</p>
+  </div>
+  <div class="blog-grid" id="blogGrid"></div>
+</div></section>
+
 <section id="contact"><div class="container">
   <div class="sec-hdr">
     <span class="sec-badge">İletişim</span>
@@ -758,7 +801,7 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
           <a href="#" class="social-link">▶</a>
         </div>
       </div>
-      <div class="ft-col"><h4>Hızlı Linkler</h4><ul class="ft-links"><li><a href="javascript:void(0)" onclick="goTo('hero')">Ana Sayfa</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">Hizmetler</a></li><li><a href="javascript:void(0)" onclick="goTo('online')">Online Dersler</a></li><li><a href="javascript:void(0)" onclick="goTo('how-it-works')">Nasıl Çalışıyoruz</a></li><li><a href="javascript:void(0)" onclick="goTo('contact')">İletişim</a></li></ul></div>
+      <div class="ft-col"><h4>Hızlı Linkler</h4><ul class="ft-links"><li><a href="javascript:void(0)" onclick="goTo('hero')">Ana Sayfa</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">Hizmetler</a></li><li><a href="javascript:void(0)" onclick="goTo('online')">Online Dersler</a></li><li><a href="javascript:void(0)" onclick="goTo('blog')">Blog</a></li><li><a href="javascript:void(0)" onclick="goTo('how-it-works')">Nasıl Çalışıyoruz</a></li><li><a href="javascript:void(0)" onclick="goTo('contact')">İletişim</a></li></ul></div>
       <div class="ft-col"><h4>Hizmetlerimiz</h4><ul class="ft-links"><li><a href="javascript:void(0)" onclick="goTo('services')">Pilates</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">Atletik Performans</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">Postürel Egzersizler</a></li><li><a href="javascript:void(0)" onclick="goTo('services')">EMS</a></li></ul></div>
       <div class="ft-col" id="footerContact"></div>
     </div>
@@ -782,6 +825,26 @@ footer{box-shadow:0 -8px 40px rgba(0,0,0,.06)}
 <button id="flt-cta" style="display:none" onclick="return false"></button>
 <button id="rev-btn" onclick="document.getElementById('revModal').classList.remove('hidden')">⭐ Bizi Değerlendirin</button>
 
+<div class="blog-modal-ov hidden" id="blogModal">
+  <div class="blog-modal-wrap">
+    <button class="blog-modal-close" onclick="closeBlogModal()">✕</button>
+    <div class="blog-modal">
+      <img class="blog-modal-img" id="blogModalImg" src="" alt="">
+      <div class="blog-modal-body">
+        <div class="blog-modal-meta">
+          <span class="blog-modal-cat" id="blogModalCat"></span>
+          <span class="blog-modal-date" id="blogModalDate"></span>
+        </div>
+        <h2 class="blog-modal-title" id="blogModalTitle"></h2>
+        <div class="blog-modal-content" id="blogModalContent"></div>
+        <div class="blog-cta">
+          <p style="color:var(--muted);margin-bottom:1rem;font-size:.9rem">Profesyonel destek için bizimle iletişime geçin.</p>
+          <button class="btn btn-green" onclick="closeBlogModal();openRandevu()">Ücretsiz Randevu Al</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal-ov hidden" id="apptModal">
   <div class="modal">
     <div class="modal-hdr">
@@ -871,7 +934,7 @@ const SITE_URL = 'https://metaacademy.com';
 
 
 
-const K={hero:'ma_hero',svc:'ma_svc',svc_meta:'ma_svc_meta',steps:'ma_hiw',gal:'ma_gal',hyg:'ma_hyg',rev:'ma_rev',contact:'ma_con',sts:'ma_st',appts:'ma_appt',online:'ma_online'};
+const K={hero:'ma_hero',svc:'ma_svc',svc_meta:'ma_svc_meta',steps:'ma_hiw',gal:'ma_gal',hyg:'ma_hyg',rev:'ma_rev',contact:'ma_con',sts:'ma_st',appts:'ma_appt',online:'ma_online',blog:'ma_blog'};
 const DEF={
   hero:{badge:'Kadıköy Kozyatağı • Premium Stüdyo',t1:'Bilim Temelli',t2:'EMS & Pilates & Performans',t3:'Stüdyosu',sub:'Ücretsiz postür analizi, kişiye özel programlar ve uzman eğitmenlerle ağrısız, güçlü ve dengeli bir beden.',cta:'Ücretsiz Postür Analizi Randevusu Al',t1v:'Kişiye Özel',t1l:'Antrenman Programı',t2v:'Uzman Eğitmen',t2l:'Spor Bilimci & Fizyoterapist Kadro',t3v:'Bilimsel',t3l:'Değerlendirme Yöntemi',btn_randevu:'Ücretsiz Randevu Al',btn_form:'Form Bırak',btn_flt:'🏃 Ücretsiz Postür Analizi Randevusu Al'},
   svc:[
@@ -951,6 +1014,11 @@ const DEF={
     maps:'https://www.openstreetmap.org/export/embed.html?bbox=29.09358215332031%2C40.96205620906779%2C29.097584247589108%2C40.96605920493748&layer=mapnik&marker=40.9640568%2C29.0955825'
   },
   sts:{badge:1,title_line1:1,subtitle:1,cta_text:1,trust_1_value:1,phone:1,address_line1:1,hours_days:1,email:1,maps_url:1},
+  blog:[
+    {id:'b1',title:'Reformer Pilates Nedir? Faydaları ve Kimler Yapabilir?',category:'Pilates',date:'2025-01-15',img:'https://lh3.googleusercontent.com/p/AF1QipNhcy5Zleka8z2eGhk76kQlsZGFj15p0IgpMk2k=w800-h600-k-no',excerpt:'Reformer pilates, yaylı direnç sistemiyle çalışan özel bir alet üzerinde yapılan, core güçlendirme ve esnekliği artıran etkili bir egzersiz yöntemidir.',content:'Reformer pilates, Joseph Pilates tarafından geliştirilen ve günümüzde tüm dünyada yaygınlaşan bir egzersiz yöntemidir.\n\nReformer cihazı, kaydıran platform, yaylar, ipler ve kol askılarından oluşur. Bu ekipman sayesinde kaslar hem güçlendirilir hem de esneklik artırılır.\n\nKimler Yapabilir?\nReformer pilates her yaştan ve her fitness seviyesinden kişi için uygundur. Başlangıç seviyesinden ileri seviyeye kadar farklı zorluk dereceleri mevcuttur. Hamilelik, ameliyat sonrası rehabilitasyon ve kronik ağrı yönetimi için de önerilmektedir.\n\nFaydaları:\n• Core kaslarını güçlendirir\n• Postürü düzeltir\n• Esnekliği artırır\n• Stres azaltır\n• Vücut farkındalığı geliştirir\n\nMeta Academy\'de uzman eğitmenlerimiz eşliğinde kişiye özel Reformer Pilates programı oluşturmak için bizimle iletişime geçin.',visible:true},
+    {id:'b2',title:'EMS Antrenmanı: 20 Dakikada 2 Saatlik Etki',category:'EMS',date:'2025-01-22',img:'https://lh3.googleusercontent.com/p/AF1QipOZxygZrEOuxqv8wkDv1cD3z1wJkFl1DqMgAxpW=w800-h600-k-no',excerpt:'EMS teknolojisi ile 20 dakikalık bir seans, saatler süren geleneksel antrenmanlarla aynı kas aktivasyonunu sağlar. Meşgul profesyoneller için mükemmel bir çözüm.',content:'EMS (Elektro Kas Stimülasyonu) teknolojisi, vücudun kendi sinir sistemini taklit eden elektrik impulsları kullanarak kasları aktive eder.\n\nNasıl Çalışır?\nÖzel EMS kıyafeti giyilir ve cihaz aracılığıyla düşük frekanslı elektrik akımları kas gruplarına gönderilir. Bu sayede kaslar klasik antrenmana kıyasla çok daha yoğun çalışır.\n\nKim Yapabilir?\nSağlıklı yetişkinler, hamile olmayan bireyler ve kalp pili takmayan kişiler EMS antrenmanı yapabilir. Doktor onayıyla bazı özel durumlar için de uygulanabilir.\n\nSonuçlar:\n• Kısa sürede kas güçlenmesi\n• Metabolizma hızlanması\n• Selülit azalması\n• Doğum sonrası toparlanma\n• Bölgesel incelme\n\nHaftada 1 seans, 20 dakika ile görünür sonuçlar elde edebilirsiniz.',visible:true},
+    {id:'b3',title:'Masa Başı Çalışanlar İçin 5 Temel Postür Egzersizi',category:'Postür',date:'2025-02-05',img:'https://lh3.googleusercontent.com/p/AF1QipMzz3RptKbd6PufQrrcCtOJUIdGr5T4q8J6CmrX=w800-h600-k-no',excerpt:'Günde 8+ saat bilgisayar başında geçiriyorsanız, boyun ve sırt ağrılarından kurtulmanızı sağlayacak 5 temel postür egzersizini keşfedin.',content:'Masa başında uzun saatler geçirmek, öne çıkmış baş, yuvarlak omuzlar ve bel ağrısına yol açabilir. Bu sorunları önlemek ve tedavi etmek için aşağıdaki egzersizleri düzenli olarak uygulayın.\n\n1. Boyun Germe (Cervical Retraction)\nÇeneyi hafifçe içeri çekip başı geriye doğru kaydırın. 10 saniye tutun, 10 tekrar yapın.\n\n2. Omuz Açma (Shoulder Blade Squeeze)\nİki omuz küreğini birbirine doğru sıkın, göğsü açın. 5 saniye tutun, 15 tekrar.\n\n3. Göğüs Açıcı (Chest Opener)\nKolları yana açıp geriye doğru esneyin. Derin nefes alın. 30 saniye.\n\n4. Hip Flexor Germe\nDiz üstü oturarak kalçayı öne itin, kalça ön kaslarını hissedin. 30 saniye her taraf.\n\n5. Cat-Cow Hareketi\nDörtayak pozisyonunda sırayı yuvarlayıp açın. 10 tekrar, nefesle koordineli.\n\nBu egzersizleri sabah ve öğleden sonra birer set yapmanız yeterlidir.',visible:true}
+  ],
   online:{badge:'Online Dersler',title:'Nerede Olursanız Olun',titleAccent:'Bizimle Hareket Edin',sub:'Stüdyo kalitesinde pilates ve egzersiz deneyimini evinizin konforunda yaşayın. Canlı ve kayıtlı derslerle tamamen esnek bir program.',cards:[{icon:'📹',title:'Canlı Dersler',desc:'Birebir veya grup olarak gerçek zamanlı dersler. Eğitmeninizden anında geri bildirim alın.'},{icon:'🎥',title:'Kayıtlı Kütüphane',desc:'İstediğiniz zaman erişebileceğiniz ders arşivi. Kendi hızınızda, istediğiniz yerde ilerleyin.'},{icon:'📅',title:'Esnek Program',desc:'Size uygun saatlerde ders planlayın. 07:00 – 21:00 arası müsait eğitmenlerimizden seçin.'},{icon:'🎯',title:'Kişiselleştirilmiş Plan',desc:'Online olsa da programınız size özel. Haftalık ilerleme takibi ve düzenli program güncellemeleri.'}],howBadge:'Nasıl Başlarım?',howTitle:'3 Adımda',howTitleAccent:'Online Derse Başla',steps:[{num:'1',title:'Ön Görüşme',desc:'Video görüşme ile hedeflerinizi ve mevcut durumunuzu değerlendiriyoruz.'},{num:'2',title:'Program Tasarımı',desc:'Size özel online ders programı ve gerekli ekipman listesi hazırlanır.'},{num:'3',title:'Derse Başla',desc:'Zoom veya Google Meet üzerinden eğitmeninizle buluşun. Kaydı alın, tekrar izleyin.'}],ctaIcon:'🌐',ctaTitle:'Online Ders Paketi',ctaFeatures:['✓ Canlı birebir veya grup ders','✓ Ders kaydı erişimi','✓ Haftalık ilerleme raporu','✓ WhatsApp destek hattı','✓ Kişisel egzersiz programı'],ctaBtn:'Ücretsiz Deneme Dersi Al',ctaNote:'İlk ders ücretsiz · Ekipman gerekmez'}
 };
 
@@ -1212,14 +1280,56 @@ function renderOnline(){
   const el=document.getElementById('online');
   if(!el||!d)return;
   el.innerHTML='<div class="container"><div class="sec-hdr"><span class="sec-badge">'+d.badge+'</span><h2 class="sec-title">'+d.title+' <span class="accent">'+d.titleAccent+'</span></h2><p class="sec-sub" style="margin:0 auto">'+d.sub+'</p></div><div class="online-grid">'+d.cards.map(function(c){return'<div class="online-card"><div class="online-icon">'+c.icon+'</div><h3>'+c.title+'</h3><p>'+c.desc+'</p></div>';}).join('')+'</div><div class="online-how"><div><span class="sec-badge">'+d.howBadge+'</span><h3 class="sec-title">'+d.howTitle+' <span class="accent">'+d.howTitleAccent+'</span></h3><div class="online-steps">'+d.steps.map(function(s){return'<div class="online-step"><div class="online-step-num">'+s.num+'</div><div><strong>'+s.title+'</strong><p>'+s.desc+'</p></div></div>';}).join('')+'</div></div><div class="online-cta-card"><div class="online-cta-icon">'+d.ctaIcon+'</div><h3>'+d.ctaTitle+'</h3><ul class="online-features">'+d.ctaFeatures.map(function(f){return'<li>'+f+'</li>';}).join('')+'</ul><button class="btn btn-cream" onclick="openRandevu()" style="width:100%;justify-content:center">'+d.ctaBtn+'</button><p class="online-note">'+d.ctaNote+'</p></div></div></div>';
-}function init(){try{renderSvcIntro();}catch(e){}
+}
+function renderBlog(){
+  var posts=ld('blog');
+  var grid=document.getElementById('blogGrid');
+  if(!grid||!posts)return;
+  var visible=posts.filter(function(p){return p.visible!==false;});
+  if(!visible.length){grid.innerHTML='<div class="blog-empty">Henüz yayınlanmış içerik bulunmuyor.</div>';return;}
+  grid.innerHTML=visible.map(function(p){
+    var d=new Date(p.date);
+    var dateStr=d.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
+    var imgHtml=p.img?'<img class="blog-card-img" src="'+p.img+'" alt="'+p.title+'" loading="lazy">'
+      :'<div class="blog-card-img-empty">📝</div>';
+    return '<div class="blog-card">'
+      +imgHtml
+      +'<div class="blog-card-body">'
+        +'<div class="blog-card-meta"><span class="blog-card-cat">'+p.category+'</span><span class="blog-card-date">'+dateStr+'</span></div>'
+        +'<div class="blog-card-title">'+p.title+'</div>'
+        +'<div class="blog-card-excerpt">'+p.excerpt+'</div>'
+        +'<button class="blog-card-btn" onclick="openBlogPost(\''+p.id+'\')">Devamını Oku →</button>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+function openBlogPost(id){
+  var posts=ld('blog');
+  var p=posts.find(function(x){return x.id===id;});
+  if(!p)return;
+  var d=new Date(p.date);
+  var dateStr=d.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('blogModalImg').src=p.img||'';
+  document.getElementById('blogModalImg').style.display=p.img?'block':'none';
+  document.getElementById('blogModalCat').textContent=p.category;
+  document.getElementById('blogModalDate').textContent=dateStr;
+  document.getElementById('blogModalTitle').textContent=p.title;
+  document.getElementById('blogModalContent').textContent=p.content||p.excerpt;
+  document.getElementById('blogModal').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+}
+function closeBlogModal(){
+  document.getElementById('blogModal').classList.add('hidden');
+  document.body.style.overflow='';
+}
+function init(){try{renderSvcIntro();}catch(e){}
 try{renderHero();}catch(e){}
 try{renderSvc();}catch(e){}
 try{renderGal();}catch(e){}
 try{renderSteps();}catch(e){}
 try{renderHyg();}catch(e){}
 try{renderRevs();}catch(e){}
-try{renderContact();}catch(e){}try{renderOnline();}catch(e){}}
+try{renderContact();}catch(e){}try{renderOnline();}catch(e){}try{renderBlog();}catch(e){}}
 
 // ── SMOOTH SCROLL (iframe/domain uyumlu) ──
 function goTo(id){
@@ -1250,7 +1360,8 @@ function openPopup(){
 function closePopup(){try{var modal=document.getElementById('apptModal');if(modal)modal.classList.add('hidden');try{sessionStorage.setItem('ma_popup_session','1');}catch(e){}}catch(e){}}
 document.getElementById('apptModal').addEventListener('click',function(e){if(e.target===this)closePopup();});
 document.getElementById('revModal').addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden');});
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){closePopup();document.getElementById('revModal').classList.add('hidden');}});
+document.getElementById('blogModal').addEventListener('click',function(e){if(e.target===this)closeBlogModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closePopup();document.getElementById('revModal').classList.add('hidden');closeBlogModal();}});
 
 function submitAppt(e){
   e.preventDefault();
